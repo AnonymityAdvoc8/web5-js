@@ -77,11 +77,11 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@web5/agent": "workspace:*",
+    "@web5/agent": "file:/Users/mehdi/projects/web5-js/packages/agent",
     "@web5/common": "1.0.0",
     "@web5/crypto": "1.0.0",
-    "@web5/dids": "1.1.0",
-    "@web5/user-agent": "workspace:*"
+    "@web5/dids": "file:/Users/mehdi/projects/web5-js/packages/dids",
+    "@web5/user-agent": "file:/Users/mehdi/projects/web5-js/packages/user-agent"
   },
   "devDependencies": {
     "@playwright/test": "1.45.3",

@@ -8,6 +8,7 @@ export * from './did-error.js';
 export * from './bearer-did.js';
 
 export * from './methods/did-dht.js';
+export * from './methods/did-continuum.js';
 export * from './methods/did-ion.js';
 export * from './methods/did-jwk.js';
 export * from './methods/did-key.js';

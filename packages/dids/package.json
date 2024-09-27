@@ -1,6 +1,6 @@
 {
   "name": "@web5/dids",
-  "version": "1.1.2",
+  "version": "1.1.2.1",
   "description": "TBD DIDs library",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -17,7 +17,8 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "test:node": "pnpm build:tests:node && pnpm c8 mocha",
-    "test:browser": "pnpm build:tests:browser && web-test-runner"
+    "test:browser": "pnpm build:tests:browser && web-test-runner",
+    "updateLink": "npm run clean && tsc && npm rm my-lib -g && npm link"
   },
   "homepage": "https://github.com/TBD54566975/web5-js/tree/main/packages/dids#readme",
   "bugs": "https://github.com/TBD54566975/web5-js/issues",

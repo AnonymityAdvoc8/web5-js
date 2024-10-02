@@ -1,0 +1,19 @@
+{
+  "name": "test-dids",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@continuum5/dids": "file:/Users/mehdi/projects/web5-js/packages/dids",
+    "@web5/user-agent": "file:/Users/mehdi/projects/web5-js/packages/user-agent",
+    "@web5/api": "file:/Users/mehdi/projects/web5-js/packages/api",
+    "jose": "^5.9.3"
+  },
+  "type": "module"
+}

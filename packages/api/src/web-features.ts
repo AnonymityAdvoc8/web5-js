@@ -4,11 +4,11 @@
   so take care to gate additions to only activate code in the right env, such as a Service Worker scope or page window.
 */
 
-import { UniversalResolver, DidDht, DidWeb } from '@web5/dids';
+import { UniversalResolver, DidDht, DidWeb, DidContinuum } from '@continuum5/dids';
 
 declare const ServiceWorkerGlobalScope: any;
 
-const DidResolver = new UniversalResolver({ didResolvers: [DidDht, DidWeb] });
+const DidResolver = new UniversalResolver({ didResolvers: [DidDht, DidWeb, DidContinuum] });
 const didUrlRegex = /^https?:\/\/dweb\/([^/]+)\/?(.*)?$/;
 const httpToHttpsRegex = /^http:/;
 const trailingSlashRegex = /\/$/;

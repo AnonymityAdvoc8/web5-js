@@ -80,7 +80,7 @@
     "@web5/agent": "file:/Users/mehdi/projects/web5-js/packages/agent",
     "@web5/common": "1.0.0",
     "@web5/crypto": "1.0.0",
-    "@web5/dids": "file:/Users/mehdi/projects/web5-js/packages/dids",
+    "@continuum5/dids" :"0.0.1",
     "@web5/user-agent": "file:/Users/mehdi/projects/web5-js/packages/user-agent"
   },
   "devDependencies": {

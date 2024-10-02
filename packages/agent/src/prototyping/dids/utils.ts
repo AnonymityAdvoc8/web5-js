@@ -1,4 +1,4 @@
-import type { PortableDid } from '@web5/dids';
+import type { PortableDid } from '@continuum5/dids';
 
 export function isPortableDid(obj: unknown): obj is PortableDid {
   // Validate that the given value is an object that has the necessary properties of PortableDid.

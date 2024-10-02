@@ -1,4 +1,4 @@
-import type { PortableDid } from '@web5/dids';
+import type { PortableDid } from '@continuum5/dids';
 
 /**
  * Represents metadata about a Web5 Identity.

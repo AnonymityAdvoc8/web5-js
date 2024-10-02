@@ -1,4 +1,4 @@
-import { BearerDid } from '@web5/dids';
+import { BearerDid } from '@continuum5/dids';
 import { IdentityMetadata, PortableIdentity } from './types/identity.js';
 
 /**

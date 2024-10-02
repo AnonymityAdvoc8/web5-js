@@ -1,4 +1,4 @@
-import type { BearerDid } from '@web5/dids';
+import type { BearerDid } from '@continuum5/dids';
 import type { IPresentation} from '@sphereon/ssi-types';
 
 import { utils as cryptoUtils } from '@web5/crypto';

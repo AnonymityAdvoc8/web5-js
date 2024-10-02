@@ -1,4 +1,4 @@
-import type { DidService } from '@web5/dids';
+import type { DidService } from '@continuum5/dids';
 import type { Readable, RequireOnly } from '@web5/common';
 import type {
   RecordsReadReply,

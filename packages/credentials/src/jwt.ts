@@ -1,4 +1,4 @@
-import { BearerDid } from '@web5/dids';
+import { BearerDid } from '@continuum5/dids';
 import type {
   JwtPayload,
   JwtHeaderParams,
@@ -8,7 +8,7 @@ import type {
 
 import { Convert } from '@web5/common';
 import { LocalKeyManager as CryptoApi  } from '@web5/crypto';
-import { DidDht, DidIon, DidKey, DidJwk, DidWeb, UniversalResolver, utils as didUtils } from '@web5/dids';
+import { DidDht, DidIon, DidKey, DidJwk, DidWeb, DidContinuum, UniversalResolver, utils as didUtils } from '@continuum5/dids';
 
 const crypto = new CryptoApi();
 
@@ -91,7 +91,7 @@ export class Jwt {
   /**
    * DID Resolver instance for resolving decentralized identifiers.
    */
-  static didResolver: UniversalResolver = new UniversalResolver({ didResolvers: [DidDht, DidIon, DidKey, DidJwk, DidWeb] });
+  static didResolver: UniversalResolver = new UniversalResolver({ didResolvers: [DidDht, DidIon, DidKey, DidJwk, DidWeb, DidContinuum] });
 
   /**
    * Creates a signed JWT.

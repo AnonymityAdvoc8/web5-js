@@ -9,9 +9,9 @@ import type {
   DidResolutionResult,
   DidResolutionOptions,
   DidVerificationMethod,
-} from '@web5/dids';
+} from '@continuum5/dids';
 
-import { BearerDid, Did, UniversalResolver } from '@web5/dids';
+import { BearerDid, Did, UniversalResolver } from '@continuum5/dids';
 
 import type { AgentDataStore } from './store-data.js';
 import type { AgentKeyManager } from './types/key-manager.js';

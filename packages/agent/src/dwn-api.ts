@@ -20,7 +20,7 @@ import {
 
 import { NodeStream } from '@web5/common';
 import { utils as cryptoUtils } from '@web5/crypto';
-import { DidDht, DidJwk, DidResolverCacheLevel, UniversalResolver } from '@web5/dids';
+import { DidDht, DidJwk, DidContinuum, DidResolverCacheLevel, UniversalResolver } from '@continuum5/dids';
 
 import type { Web5PlatformAgent } from './types/agent.js';
 import type {
@@ -137,7 +137,7 @@ export class AgentDwnApi {
     dataStore ??= new DataStoreLevel({ blockstoreLocation: `${dataPath}/DWN_DATASTORE` });
 
     didResolver ??= new UniversalResolver({
-      didResolvers : [DidDht, DidJwk],
+      didResolvers : [DidDht, DidJwk, DidContinuum],
       cache        : new DidResolverCacheLevel({ location: `${dataPath}/DID_RESOLVERCACHE` }),
     });
 

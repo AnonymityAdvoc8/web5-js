@@ -4,7 +4,7 @@ import type { AbstractLevel } from 'abstract-level';
 import { Level } from 'level';
 import { LevelStore, MemoryStore } from '@web5/common';
 import { DataStoreLevel, Dwn, EventEmitterStream, EventLogLevel, MessageStoreLevel, ResumableTaskStoreLevel } from '@tbd54566975/dwn-sdk-js';
-import { DidDht, DidJwk, DidResolutionResult, DidResolverCache, DidResolverCacheLevel } from '@web5/dids';
+import { DidDht, DidJwk, DidContinuum, DidResolutionResult, DidResolverCache, DidResolverCacheLevel } from '@continuum5/dids';
 
 import type { Web5PlatformAgent } from './types/agent.js';
 

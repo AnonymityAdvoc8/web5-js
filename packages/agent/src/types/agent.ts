@@ -1,4 +1,4 @@
-import type { BearerDid } from '@web5/dids';
+import type { BearerDid } from '@continuum5/dids';
 
 import type { Web5Rpc } from '../rpc-client.js';
 import type { AgentDwnApi } from '../dwn-api.js';

@@ -1,4 +1,4 @@
-import type { DidResolverCache, DidResolutionResult } from '@web5/dids';
+import type { DidResolverCache, DidResolutionResult } from '@continuum5/dids';
 
 import ms from 'ms';
 import { TtlCache } from '@web5/common';

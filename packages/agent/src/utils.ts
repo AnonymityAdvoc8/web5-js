@@ -1,8 +1,8 @@
-import type { DidUrlDereferencer } from '@web5/dids';
+import type { DidUrlDereferencer } from '@continuum5/dids';
 import { PaginationCursor, RecordsDeleteMessage, RecordsWriteMessage } from '@tbd54566975/dwn-sdk-js';
 
 import { Readable } from '@web5/common';
-import { utils as didUtils } from '@web5/dids';
+import { utils as didUtils } from '@continuum5/dids';
 import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
 import { DateSort, DwnInterfaceName, DwnMethodName, Message, Records, RecordsWrite } from '@tbd54566975/dwn-sdk-js';
 

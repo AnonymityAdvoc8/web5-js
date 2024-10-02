@@ -14,7 +14,7 @@ import type {
 } from '@web5/agent';
 
 import { LevelStore } from '@web5/common';
-import { BearerDid, DidDht, DidJwk, DidResolverCacheLevel } from '@web5/dids';
+import { BearerDid, DidDht, DidJwk, DidContinuum, DidResolverCacheLevel } from '@continuum5/dids';
 import {
   AgentDidApi,
   AgentDwnApi,

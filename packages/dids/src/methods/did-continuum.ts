@@ -177,24 +177,26 @@ export interface DidContinuumVerificationMethod {
   id?: string;
 
   /**
-   * A public key in JWK format.
-   *
-   * A JSON Web Key (JWK) that conforms to {@link https://datatracker.ietf.org/doc/html/rfc7517 | RFC 7517}.
+   * A public key in Hex format.
    *
    * @example
    * ```ts
    * const verificationMethod: DidContinuumVerificationMethod = {
-   *   publicKeyJwk: {
-   *     kty : "OKP",
-   *     crv : "X25519",
-   *     x   : "7XdJtNmJ9pV_O_3mxWdn6YjiHJ-HhNkdYQARzVU_mwY",
-   *     kid : "xtsuKULPh6VN9fuJMRwj66cDfQyLaxuXHkMlmAe_v6I"
-   *   },
+   *   "id": "did:continuum:0x2af7:0xD4f95FaeA4A8513510b2c1a35028e616bbF97Fea#delegate-3",
+                "type": "JsonWebKey2020",
+                "controller": "did:continuum:0x2af7:0xD4f95FaeA4A8513510b2c1a35028e616bbF97Fea",
+                "publicKeyHex": "7b226964223a226469643a636f6e74696e75756d3a3078326166373a30784434663935466165413441383531333531306232633161333530323865363136626246393
+                746656123766572696669636174696f6e2d6b6579222c2274797065223a224a736f6e5765624b657932303230222c22636f6e74726f6c6c6572223
+                a226469643a636f6e74696e75756d3a3078326166373a3078443466393546616541344138353133353130623263316133353032386536313662624639374
+                66561222c227075626c69634b65794a776b223a7b226b7479223a224543222c22637276223a22736563703235366b31222c2278223a2255524f754f437535
+                555851415f765436416141567a58595a6b7975716d504b72734a765a5f7679426a4f63222c2279223a227836546c31706b5447593753714a662d616a78374f
+                4457536a6e636e774e4b49685a5a6b4650777a306773227d7d"
+          }
    *   ...
    * };
    * ```
    */
-  publicKeyJwk: Jwk;
+  publicKeyHex: String;
 
   /**
    * Specify the purposes for which a verification method is intended to be used in a DID document.
@@ -476,7 +478,7 @@ export class DidContinuum extends DidMethod {
       vm => vm.id === (methodId ?? didDocument.assertionMethod?.[0])
     );
 
-    if (!(verificationMethod && verificationMethod.publicKeyJwk)) {
+    if (!(verificationMethod && verificationMethod.type === 'JsonWebKey2020' && verificationMethod.publicKeyHex)) {
       throw new DidError(DidErrorCode.InternalError, 'A verification method intended for signing could not be determined from the DID Document');
     }
 

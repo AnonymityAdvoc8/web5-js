@@ -491,10 +491,16 @@ export type DidServiceEndpoint = string | Record<string, any>;
  * @see {@link https://www.w3.org/TR/did-core/#verification-methods | DID Core Specification, § Verification Methods}
  */
 export interface DidVerificationMethod {
+
   /**
    * The identifier of the verification method, which must be a URI.
    */
   id: string;
+
+    /**
+   * The DID of the entity that controls this verification method.
+   */
+  controller: string;
 
   /**
    * The type of the verification method.
@@ -504,10 +510,15 @@ export interface DidVerificationMethod {
    */
   type: string;
 
-  /**
+
+    /**
    * The DID of the entity that controls this verification method.
    */
-  controller: string;
+
+    /**
+   * (Optional) A public key in HEX format.
+   */
+  publicKeyHex?: string;
 
   /**
    * (Optional) A public key in JWK format.

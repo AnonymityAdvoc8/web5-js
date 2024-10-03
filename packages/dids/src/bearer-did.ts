@@ -17,6 +17,7 @@ import type { DidMetadata, PortableDid } from './types/portable-did.js';
 
 import { DidError, DidErrorCode } from './did-error.js';
 import { extractDidFragment, getVerificationMethods } from './utils.js';
+import { Buffer } from 'buffer';
 
 /**
  * A `BearerDidSigner` extends the {@link Signer} interface to include specific properties for
@@ -78,11 +79,16 @@ export class BearerDid {
    */
   keyManager: CryptoApi;
 
-  constructor({ uri, document, metadata, keyManager }: {
-    uri: string,
-    document: DidDocument,
-    metadata: DidMetadata,
-    keyManager: CryptoApi
+  constructor({
+    uri,
+    document,
+    metadata,
+    keyManager,
+  }: {
+    uri: string;
+    document: DidDocument;
+    metadata: DidMetadata;
+    keyManager: CryptoApi;
   }) {
     this.uri = uri;
     this.document = document;
@@ -124,30 +130,44 @@ export class BearerDid {
    */
   public async export(): Promise<PortableDid> {
     // Verify the DID document contains at least one verification method.
-    if (!(Array.isArray(this.document.verificationMethod) && this.document.verificationMethod.length > 0)) {
-      throw new Error(`DID document for '${this.uri}' is missing verification methods`);
+    if (
+      !(
+        Array.isArray(this.document.verificationMethod) &&
+        this.document.verificationMethod.length > 0
+      )
+    ) {
+      throw new Error(
+        `DID document for '${this.uri}' is missing verification methods`
+      );
     }
 
     // Create a new `PortableDid` object to store the exported data.
     let portableDid: PortableDid = {
-      uri      : this.uri,
-      document : this.document,
-      metadata : this.metadata
+      uri: this.uri,
+      document: this.document,
+      metadata: this.metadata,
     };
 
     // If the BearerDid's key manager supports exporting private keys, add them to the portable DID.
-    if ('exportKey' in this.keyManager && typeof this.keyManager.exportKey === 'function') {
+    if (
+      'exportKey' in this.keyManager &&
+      typeof this.keyManager.exportKey === 'function'
+    ) {
       const privateKeys: Jwk[] = [];
       for (let vm of this.document.verificationMethod) {
         if (!vm.publicKeyJwk) {
-          throw new Error(`Verification method '${vm.id}' does not contain a public key in JWK format`);
+          throw new Error(
+            `Verification method '${vm.id}' does not contain a public key in JWK format`
+          );
         }
 
         // Compute the key URI of the verification method's public key.
-        const keyUri = await this.keyManager.getKeyUri({ key: vm.publicKeyJwk });
+        const keyUri = await this.keyManager.getKeyUri({
+          key: vm.publicKeyJwk,
+        });
 
         // Retrieve the private key from the key manager.
-        const privateKey = await this.keyManager.exportKey({ keyUri }) as Jwk;
+        const privateKey = (await this.keyManager.exportKey({ keyUri })) as Jwk;
 
         // Add the verification method to the key set.
         privateKeys.push({ ...privateKey });
@@ -171,57 +191,94 @@ export class BearerDid {
    *                          verify operations. Optional.
    * @returns An instantiated {@link Signer} that can be used to sign and verify data.
    */
-  public async getSigner(params?: { methodId: string }): Promise<BearerDidSigner> {
+  public async getSigner(params?: {
+    methodId: string;
+  }): Promise<BearerDidSigner> {
     // Attempt to find a verification method that matches the given method ID, or if not given,
     // find the first verification method intended for signing claims.
 
     const verificationMethod = this.document.verificationMethod?.find(
-      vm => extractDidFragment(vm.id) === (extractDidFragment(params?.methodId) ?? extractDidFragment(this.document.assertionMethod?.[0]))
+      (vm) => vm.type === 'JsonWebKey2020'
     );
 
-    if (!(verificationMethod && verificationMethod.publicKeyJwk)) {
-      throw new DidError(DidErrorCode.InternalError, 'A verification method intended for signing could not be determined from the DID Document');
-    }
+    const verificationMethodJWK = this.document.verificationMethod?.find(
+      (vm) =>
+        extractDidFragment(vm.id) ===
+        (extractDidFragment(params?.methodId) ??
+          extractDidFragment(this.document.assertionMethod?.[0]))
+    );
 
+    if (!verificationMethod && !verificationMethodJWK) {
+      throw new DidError(
+        DidErrorCode.InternalError,
+        'A verification method intended for signing could not be determined from the DID Document'
+      );
+    }
+    let tempVerificationMethod: any;
     let publicKey: any;
     let keyUri: string | undefined;
 
     // Handle both JWK and Hex public keys
-    if (verificationMethod.publicKeyJwk) {
-      // If the public key is in JWK format, compute the key URI using the JWK.
-      keyUri = await this.keyManager.getKeyUri({ key: verificationMethod.publicKeyJwk });
+    if (verificationMethod) {
+      tempVerificationMethod = verificationMethod;
+
+      // Handle both JWK and Hex public keys
+      if (verificationMethod.publicKeyJwk) {
+        // If the public key is in JWK format, use the JWK key
+        keyUri = await this.keyManager.getKeyUri({
+          key: verificationMethod.publicKeyJwk,
+        });
+        // Retrieve the public key from the key manager using the key URI.
+        publicKey = await this.keyManager.getPublicKey({ keyUri });
+      } else if (verificationMethod.publicKeyHex) {
+        let Key = JSON.parse(
+          Buffer.from(verificationMethod.publicKeyHex, 'hex').toString()
+        ); // Convert hex to buffer or string as needed.
+        keyUri = await this.keyManager.getKeyUri({ key: Key.publicKeyJwk });
+        publicKey = await this.keyManager.getPublicKey({ keyUri });
+      } else {
+        throw new DidError(
+          DidErrorCode.InternalError,
+          'Unsupported public key format or missing public key'
+        );
+      }
+    } else if (verificationMethodJWK && verificationMethodJWK.publicKeyJwk) {
+      tempVerificationMethod = verificationMethodJWK;
+      // If the public key is in JWK format, use the JWK key
+      keyUri = await this.keyManager.getKeyUri({
+        key: verificationMethodJWK.publicKeyJwk,
+      });
       // Retrieve the public key from the key manager using the key URI.
       publicKey = await this.keyManager.getPublicKey({ keyUri });
-
-    } else if (verificationMethod.publicKeyHex && verificationMethod.type === "JsonWebKey2020") {
-      // If the public key is in hex format, compute the key URI using the hex-encoded public key.
-      publicKey = JSON.parse(Buffer.from(verificationMethod.publicKeyHex, 'hex').toString()); // Convert hex to buffer or string as needed.
-      keyUri = await this.keyManager.getKeyUri({ key: publicKey });
-      publicKey = await this.keyManager.getPublicKey({ keyUri });
-
-    } else {
-      throw new DidError(DidErrorCode.InternalError, 'Unsupported public key format or missing public key');
     }
 
     // Bind the DID's key manager to the signer.
     const keyManager = this.keyManager;
 
     // Determine the signing algorithm.
-    const algorithm = cryptoUtils.getJoseSignatureAlgorithmFromPublicKey(publicKey);
+    const algorithm =
+      cryptoUtils.getJoseSignatureAlgorithmFromPublicKey(publicKey);
 
     return {
-      algorithm : algorithm,
-      keyId     : verificationMethod.id,
+      algorithm: algorithm,
+      keyId: tempVerificationMethod.id,
 
       async sign({ data }: EnclosedSignParams): Promise<Uint8Array> {
         const signature = await keyManager.sign({ data, keyUri: keyUri! }); // `keyUri` is guaranteed to be defined at this point.
         return signature;
       },
 
-      async verify({ data, signature }: EnclosedVerifyParams): Promise<boolean> {
-        const isValid = await keyManager.verify({ data, key: publicKey!, signature }); // `publicKey` is guaranteed to be defined at this point.
+      async verify({
+        data,
+        signature,
+      }: EnclosedVerifyParams): Promise<boolean> {
+        const isValid = await keyManager.verify({
+          data,
+          key: publicKey!,
+          signature,
+        }); // `publicKey` is guaranteed to be defined at this point.
         return isValid;
-      }
+      },
     };
   }
 
@@ -250,16 +307,29 @@ export class BearerDid {
    * @throws An error if the PortableDid document does not contain any verification methods or the
    *         keys for any verification method are missing in the key manager.
    */
-  public static async import({ portableDid, keyManager = new LocalKeyManager() }: {
-    keyManager?: CryptoApi & KeyImporterExporter<KmsImportKeyParams, KeyIdentifier, KmsExportKeyParams>;
+  public static async import({
+    portableDid,
+    keyManager = new LocalKeyManager(),
+  }: {
+    keyManager?: CryptoApi &
+      KeyImporterExporter<
+        KmsImportKeyParams,
+        KeyIdentifier,
+        KmsExportKeyParams
+      >;
     portableDid: PortableDid;
   }): Promise<BearerDid> {
     // Get all verification methods from the given DID document, including embedded methods.
-    const verificationMethods = getVerificationMethods({ didDocument: portableDid.document });
+    const verificationMethods = getVerificationMethods({
+      didDocument: portableDid.document,
+    });
 
     // Validate that the DID document contains at least one verification method.
     if (verificationMethods.length === 0) {
-      throw new DidError(DidErrorCode.InvalidDidDocument, `At least one verification method is required but 0 were given`);
+      throw new DidError(
+        DidErrorCode.InvalidDidDocument,
+        `At least one verification method is required but 0 were given`
+      );
     }
 
     // If given, import the private key material into the key manager.
@@ -272,34 +342,34 @@ export class BearerDid {
     for (let vm of verificationMethods) {
       let key: any;
       let keyUri: string | undefined;
-    
-      if (vm.type === "JsonWebKey2020") {
-          // Handle both JWK and Hex public keys
+
+      if (vm.type === 'JsonWebKey2020') {
+        // Handle both JWK and Hex public keys
         if (vm.publicKeyJwk) {
           // If the public key is in JWK format, use the JWK key
           key = vm.publicKeyJwk;
           keyUri = await keyManager.getKeyUri({ key: vm.publicKeyJwk });
-      
         } else if (vm.publicKeyHex) {
           // If the public key is in hex format, convert it to a string or buffer as needed
           key = JSON.parse(Buffer.from(vm.publicKeyHex, 'hex').toString()); // Convert hex to buffer or string
           keyUri = await keyManager.getKeyUri({ key: key.publicKeyJwk });
-      
         } else {
-          throw new Error(`Verification method '${vm.id}' does not contain a public key in JWK or Hex format`);
+          throw new Error(
+            `Verification method '${vm.id}' does not contain a public key in JWK or Hex format`
+          );
         }
 
         // Verify that the key is present in the key manager. If not, an error is thrown.
         await keyManager.getPublicKey({ keyUri });
       }
     }
-    
+
     // Use the given PortableDid to construct the BearerDid object.
     const did = new BearerDid({
-      uri      : portableDid.uri,
-      document : portableDid.document,
-      metadata : portableDid.metadata,
-      keyManager
+      uri: portableDid.uri,
+      document: portableDid.document,
+      metadata: portableDid.metadata,
+      keyManager,
     });
 
     return did;

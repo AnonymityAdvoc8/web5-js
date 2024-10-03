@@ -125,8 +125,8 @@ const didJWK = await DidDht.create({
 console.log('didJWK', didJWK);
 const didTest = await didJWK.export();
 console.log('didTest', didTest);
-const continuumKeyManager = await DidContinuum.create();
-console.log('continuumKeyManager', continuumKeyManager);
+// const continuumKeyManager = await DidContinuum.create();
+// console.log('continuumKeyManager', continuumKeyManager);
 // let agentDid = await BearerDid.import({
 //   portableDid: { ...portableDid, keyManager: continuumKeyManager },
 // });

@@ -3,17 +3,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@continuum5/dids": "file:/Users/mehdi/projects/web5-js/packages/dids",
-    "@web5/user-agent": "file:/Users/mehdi/projects/web5-js/packages/user-agent",
-    "@web5/api": "file:/Users/mehdi/projects/web5-js/packages/api",
-    "jose": "^5.9.3"
+    "@continuum5/dids": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids",
+    "@web5/api": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/api",
+    "@web5/user-agent": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/user-agent",
+    "jose": "^5.9.3",
+    "nodemon": "^3.1.7"
   },
   "type": "module"
 }

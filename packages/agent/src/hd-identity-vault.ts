@@ -1,9 +1,9 @@
 import type { Jwk } from '@web5/crypto';
 import type { KeyValueStore } from '@web5/common';
-import { DidDhtCreateOptions } from '@web5/dids';
+
 
 import { HDKey } from 'ed25519-keygen/hdkey';
-import { BearerDid, DidDht, DidContinuum } from '@continuum5/dids';
+import { BearerDid, DidDht, DidContinuum, DidDhtCreateOptions } from '@continuum5/dids';
 import { Convert, MemoryStore } from '@web5/common';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import { generateMnemonic, mnemonicToSeed, validateMnemonic } from '@scure/bip39';

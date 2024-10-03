@@ -1,4 +1,4 @@
-import { DidResolutionResult, DidResolverCache, DidResolverCacheLevel, DidResolverCacheLevelParams } from '@web5/dids';
+import { DidResolutionResult, DidResolverCache, DidResolverCacheLevel, DidResolverCacheLevelParams } from '@continuum5/dids';
 import { Web5PlatformAgent } from './types/agent.js';
 
 

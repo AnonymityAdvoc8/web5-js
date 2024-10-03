@@ -8,6 +8,7 @@ import type {
   DidResolutionResult,
   DidResolutionOptions,
   DidVerificationMethod,
+  DidResolverCache,
 } from '@continuum5/dids';
 
 import { BearerDid, Did, UniversalResolver } from '@continuum5/dids';

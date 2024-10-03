@@ -11,7 +11,7 @@ import {
 import { concatenateUrl } from './utils.js';
 import { xchacha20poly1305 } from '@noble/ciphers/chacha';
 import type { ConnectPermissionRequest } from './connect.js';
-import { DidDocument, DidJwk, PortableDid, type BearerDid } from '@web5/dids';
+import { DidDocument, DidJwk, PortableDid, type BearerDid } from '@continuum5/dids';
 import { DwnDataEncodedRecordsWriteMessage, DwnInterface, DwnPermissionScope, DwnProtocolDefinition } from './types/dwn.js';
 import { AgentPermissionsApi } from './permissions-api.js';
 import type { Web5Agent } from './types/agent.js';

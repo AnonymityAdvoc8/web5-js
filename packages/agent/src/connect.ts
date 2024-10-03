@@ -9,7 +9,7 @@ import { pollWithTtl } from './utils.js';
 
 import { Convert } from '@web5/common';
 import { CryptoUtils } from '@web5/crypto';
-import { DidJwk } from '@web5/dids';
+import { DidJwk } from '@continuum5/dids';
 import { DwnInterfaceName, DwnMethodName } from '@tbd54566975/dwn-sdk-js';
 
 /**

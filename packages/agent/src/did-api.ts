@@ -3,7 +3,6 @@ import type {
   DidMetadata,
   PortableDid,
   DidMethodApi,
-  DidResolverCache,
   DidDhtCreateOptions,
   DidJwkCreateOptions,
   DidResolutionResult,
@@ -18,7 +17,7 @@ import type { AgentKeyManager } from './types/key-manager.js';
 import type { ResponseStatus, Web5PlatformAgent } from './types/agent.js';
 
 import { InMemoryDidStore } from './store-did.js';
-import { DidResolverCacheMemory } from './prototyping/dids/resolver-cache-memory.js';
+import { AgentDidResolverCache } from './agent-did-resolver-cache.js';
 
 export enum DidInterface {
   Create  = 'Create',
@@ -87,8 +86,10 @@ export interface DidApiParams {
    * An optional `DidResolverCache` instance used for caching resolved DID documents.
    *
    * Providing a cache implementation can significantly enhance resolution performance by avoiding
-   * redundant resolutions for previously resolved DIDs. If omitted, a no-operation cache is used,
-   * which effectively disables caching.
+   * redundant resolutions for previously resolved DIDs. If omitted, the default is an instance of `AgentDidResolverCache`.
+   *
+   * `AgentDidResolverCache` keeps a stale copy of the Agent's managed Identity DIDs and only refreshes upon a successful resolution.
+   * This allows for quick and offline access to the internal DIDs used by the agent.
    */
   resolverCache?: DidResolverCache;
 
@@ -101,6 +102,12 @@ export function isDidRequest<T extends DidInterface>(
   return didRequest.messageType === messageType;
 }
 
+/**
+ * This API is used to manage and interact with DIDs within the Web5 Agent framework.
+ *
+ * If a DWN Data Store is used, the DID information is stored under DID's own tenant by default.
+ * If a tenant property is passed, that tenant will be used to store the DID information.
+ */
 export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> extends UniversalResolver {
   /**
    * Holds the instance of a `Web5PlatformAgent` that represents the current execution context for
@@ -120,10 +127,10 @@ export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> 
     }
 
     // Initialize the DID resolver with the given DID methods and resolver cache, or use a default
-    // in-memory cache if none is provided.
+    // AgentDidResolverCache if none is provided.
     super({
       didResolvers : didMethods,
-      cache        : resolverCache ?? new DidResolverCacheMemory()
+      cache        : resolverCache ?? new AgentDidResolverCache({ agent, location: 'DATA/AGENT/DID_CACHE' })
     });
 
     this._agent = agent;
@@ -152,6 +159,11 @@ export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> 
 
   set agent(agent: Web5PlatformAgent) {
     this._agent = agent;
+
+    // AgentDidResolverCache should set the agent if it is the type of cache being used
+    if ('agent' in this.cache) {
+      this.cache.agent = agent;
+    }
   }
 
   public async create({
@@ -162,6 +174,9 @@ export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> 
 
     // Create the DID and store the generated keys in the Agent's key manager.
     const bearerDid = await didMethod.create({ keyManager: this.agent.keyManager, options });
+
+    // pre-populate the resolution cache with the document and metadata
+    await this.cache.set(bearerDid.uri, { didDocument: bearerDid.document, didResolutionMetadata: { }, didDocumentMetadata: bearerDid.metadata });
 
     // Persist the DID to the store, by default, unless the `store` option is set to false.
     if (store ?? true) {
@@ -253,6 +268,9 @@ export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> 
     const { uri, document, metadata } = bearerDid;
     const portableDidWithoutKeys: PortableDid = { uri, document, metadata };
 
+    // pre-populate the resolution cache with the document and metadata
+    await this.cache.set(uri, { didDocument: document, didResolutionMetadata: { }, didDocumentMetadata: metadata });
+
     // Store the DID in the agent's DID store.
     // Unless an existing `tenant` is specified, a record that includes the DID's URI, document,
     // and metadata will be stored under a new tenant controlled by the imported DID.
@@ -277,6 +295,9 @@ export class AgentDidApi<TKeyManager extends AgentKeyManager = AgentKeyManager> 
     if(!portableDid) {
       throw new Error('AgentDidApi: Could not delete, DID not found');
     }
+
+    // delete from the cache
+    await this.cache.delete(didUri);
 
     // Delete the data before deleting the associated keys.
     await this._store.delete({ id: didUri, agent: this.agent, tenant });

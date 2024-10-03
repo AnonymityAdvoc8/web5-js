@@ -1,5 +1,32 @@
 # @web5/crypto-aws-kms
 
+## 1.0.5
+
+### Patch Changes
+
+- [#903](https://github.com/TBD54566975/web5-js/pull/903) [`17a4290`](https://github.com/TBD54566975/web5-js/commit/17a42902582481e2424fe7f3c3eb10dd1851e24a) Thanks [@shamilovtim](https://github.com/shamilovtim)! - use workspace for deps
+
+- Updated dependencies [[`17a4290`](https://github.com/TBD54566975/web5-js/commit/17a42902582481e2424fe7f3c3eb10dd1851e24a)]:
+  - @web5/crypto@1.0.5
+
+## 1.0.4
+
+### Patch Changes
+
+- [#838](https://github.com/TBD54566975/web5-js/pull/838) [`2d0b423`](https://github.com/TBD54566975/web5-js/commit/2d0b423b90546c8d28735b600328c8a5937b57c8) Thanks [@shamilovtim](https://github.com/shamilovtim)! - cleanup crypto utils
+
+- Updated dependencies [[`2d0b423`](https://github.com/TBD54566975/web5-js/commit/2d0b423b90546c8d28735b600328c8a5937b57c8)]:
+  - @web5/crypto@1.0.4
+
+## 1.0.3
+
+### Patch Changes
+
+- [#713](https://github.com/TBD54566975/web5-js/pull/713) [`5ed8798`](https://github.com/TBD54566975/web5-js/commit/5ed87986e4f3fde25eff2691afb49011d4ba69ce) Thanks [@shamilovtim](https://github.com/shamilovtim)! - introduce initial web5 connect implementation
+  bump crypto
+- Updated dependencies [[`5ed8798`](https://github.com/TBD54566975/web5-js/commit/5ed87986e4f3fde25eff2691afb49011d4ba69ce)]:
+  - @web5/crypto@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

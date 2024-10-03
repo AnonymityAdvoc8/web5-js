@@ -18,12 +18,15 @@ import {
   DwnDateSort,
   DwnPaginationCursor,
   isDwnMessage,
-  SendDwnRequest
+  SendDwnRequest,
+  PermissionsApi,
+  AgentPermissionsApi,
 } from '@web5/agent';
 
 import { Convert, isEmptyObject, NodeStream, removeUndefinedProperties, Stream } from '@web5/common';
 
 import { dataToBlob, SendCache } from './utils.js';
+import { PermissionGrant } from './permission-grant.js';
 
 /**
  * Represents Immutable Record properties that cannot be changed after the record is created.
@@ -72,12 +75,27 @@ export type RecordModel = ImmutableRecordProperties & OptionalRecordProperties &
  *
  * @beta
  */
-export type RecordOptions = DwnMessage[DwnInterface.RecordsWrite] & {
+export type RecordOptions = DwnMessage[DwnInterface.RecordsWrite | DwnInterface.RecordsDelete] & {
   /** The DID that signed the record. */
   author: string;
 
+  /** The attestation signature(s) for the record. */
+  attestation?: DwnMessage[DwnInterface.RecordsWrite]['attestation'];
+
+  /** The encryption information for the record. */
+  encryption?: DwnMessage[DwnInterface.RecordsWrite]['encryption'];
+
+  /** The contextId associated with the record. */
+  contextId?: string;
+
+  /** The unique identifier of the record */
+  recordId?: string;
+
   /** The DID of the DWN tenant under which record operations are being performed. */
   connectedDid: string;
+
+  /** The optional DID that will sign the records on behalf of the connectedDid  */
+  delegateDid?: string;
 
   /** The data of the record, either as a Base64 URL encoded string or a Blob. */
   encodedData?: string | Blob;
@@ -122,6 +140,9 @@ export type RecordUpdateParams = {
    */
   dataCid?: DwnMessageDescriptor[DwnInterface.RecordsWrite]['dataCid'];
 
+  /** The data format/MIME type of the supplied data */
+  dataFormat?: string;
+
   /** The size of the data in bytes. */
   dataSize?: DwnMessageDescriptor[DwnInterface.RecordsWrite]['dataSize'];
 
@@ -136,6 +157,7 @@ export type RecordUpdateParams = {
 
   /** The published status of the record. */
   published?: DwnMessageDescriptor[DwnInterface.RecordsWrite]['published'];
+
 
   /** The tags associated with the updated record */
   tags?: DwnMessageDescriptor[DwnInterface.RecordsWrite]['tags'];
@@ -192,6 +214,10 @@ export class Record implements RecordModel {
   private _agent: Web5Agent;
   /** The DID of the DWN tenant under which operations are being performed. */
   private _connectedDid: string;
+  /** The optional DID that is delegated to act on behalf of the connectedDid */
+  private _delegateDid?: string;
+  /** cache for fetching a permission {@link PermissionGrant}, keyed by a specific MessageType and protocol */
+  private _permissionsApi: PermissionsApi;
   /** Encoded data of the record, if available. */
   private _encodedData?: Blob;
   /** Stream of the record's data. */
@@ -201,8 +227,10 @@ export class Record implements RecordModel {
 
   // Private variables for DWN `RecordsWrite` message properties.
 
-  /** The DID of the entity that authored the record. */
+  /** The DID of the entity that most recently authored or deleted the record. */
   private _author: string;
+  /** The DID of the entity that originally created the record. */
+  private _creator: string;
   /** Attestation JWS signature. */
   private _attestation?: DwnMessage[DwnInterface.RecordsWrite]['attestation'];
   /** Authorization signature(s). */
@@ -242,8 +270,8 @@ export class Record implements RecordModel {
   /** Record's ID */
   get id() { return this._recordId; }
 
-  /** Record's context ID */
-  get contextId() { return this._contextId; }
+  /** Record's context ID. If the record is deleted, the context Id comes from the initial write */
+  get contextId() { return this.deleted ? this._initialWrite.contextId : this._contextId; }
 
   /** Record's creation date */
   get dateCreated() { return this._immutableProperties.dateCreated; }
@@ -287,6 +315,9 @@ export class Record implements RecordModel {
   // Getters for for properties that depend on the current state of the Record.
   /** DID that is the logical author of the Record. */
   get author(): string { return this._author; }
+
+  /** DID that is the original creator of the Record. */
+  get creator(): string { return this._creator; }
 
   /** Record's modified date */
   get dateModified() { return this._descriptor.messageTimestamp; }
@@ -335,17 +366,21 @@ export class Record implements RecordModel {
     return message;
   }
 
-  constructor(agent: Web5Agent, options: RecordOptions) {
+  constructor(agent: Web5Agent, options: RecordOptions, permissionsApi?: PermissionsApi) {
 
     this._agent = agent;
 
     // Store the author DID that originally signed the message as a convenience for developers, so
     // that they don't have to decode the signer's DID from the JWS.
     this._author = options.author;
+    // The creator is the author of the initial write, or the author of the record if there is no initial write.
+    this._creator = options.initialWrite ? getRecordAuthor(options.initialWrite) : options.author;
 
-    // Store the currently `connectedDid` so that subsequent message signing is done with the
-    // connected DID's keys and DWN requests target the connected DID's DWN.
+    // Store the `connectedDid`, and optionally the `delegateDid` and `permissionsApi` in order to be able
+    // to perform operations on the record (update, delete, data) as a delegate of the connected DID.
     this._connectedDid = options.connectedDid;
+    this._delegateDid = options.delegateDid;
+    this._permissionsApi = permissionsApi ?? new AgentPermissionsApi({ agent });
 
     // If the record was queried or read from a remote DWN, the `remoteOrigin` DID will be
     // defined. This value is used to send subsequent read requests to the same remote DWN in the
@@ -360,7 +395,7 @@ export class Record implements RecordModel {
     this._descriptor = options.descriptor;
     this._encryption = options.encryption;
     this._initialWrite = options.initialWrite;
-    this._recordId = options.recordId;
+    this._recordId = this.isRecordsDeleteDescriptor(options.descriptor) ? options.descriptor.recordId : options.recordId;
     this._protocolRole = options.protocolRole;
 
     if (options.encodedData) {
@@ -539,6 +574,7 @@ export class Record implements RecordModel {
   /**
    * Send the current record to a remote DWN by specifying their DID
    * If no DID is specified, the target is assumed to be the owner (connectedDID).
+   *
    * If an initial write is present and the Record class send cache has no awareness of it, the initial write is sent first
    * (vs waiting for the regular DWN sync)
    *
@@ -669,8 +705,8 @@ export class Record implements RecordModel {
    */
   async update({ dateModified, data, ...params }: RecordUpdateParams): Promise<DwnResponseStatus> {
 
-    if (!isDwnMessage(DwnInterface.RecordsWrite, this.rawMessage) && !this._initialWrite) {
-      throw new Error('If initial write is not set, the current rawRecord must be a RecordsWrite message.');
+    if (this.deleted) {
+      throw new Error('Record: Cannot revive a deleted record.');
     }
 
     // if there is a parentId, we remove it from the descriptor and set a parentContextId
@@ -705,7 +741,7 @@ export class Record implements RecordModel {
 
     // Throw an error if an attempt is made to modify immutable properties.
     // Note: `data` and `dateModified` have already been handled.
-    const mutableDescriptorProperties = new Set(['data', 'dataCid', 'dataSize', 'datePublished', 'messageTimestamp', 'published', 'tags']);
+    const mutableDescriptorProperties = new Set(['data', 'dataCid', 'dataFormat', 'dataSize', 'datePublished', 'messageTimestamp', 'published', 'tags']);
     Record.verifyPermittedMutation(Object.keys(params), mutableDescriptorProperties);
 
     // If `published` is set to false, ensure that `datePublished` is undefined. Otherwise, DWN SDK's schema validation
@@ -714,13 +750,28 @@ export class Record implements RecordModel {
       delete updateMessage.datePublished;
     }
 
-    const agentResponse = await this._agent.processDwnRequest({
+    const requestOptions: ProcessDwnRequest<DwnInterface.RecordsWrite> = {
       author        : this._connectedDid,
       dataStream    : dataBlob,
       messageParams : { ...updateMessage },
       messageType   : DwnInterface.RecordsWrite,
       target        : this._connectedDid,
-    });
+    };
+
+    if (this._delegateDid) {
+      const { message: delegatedGrant } = await this._permissionsApi.getPermissionForRequest({
+        connectedDid : this._connectedDid,
+        delegateDid  : this._delegateDid,
+        protocol     : this.protocol,
+        delegate     : true,
+        cached       : true,
+        messageType  : requestOptions.messageType
+      });
+      requestOptions.messageParams.delegatedGrant = delegatedGrant;
+      requestOptions.granteeDid = this._delegateDid;
+    }
+
+    const agentResponse = await this._agent.processDwnRequest(requestOptions);
 
     const { message, reply: { status } } = agentResponse;
     const responseMessage = message;
@@ -755,33 +806,62 @@ export class Record implements RecordModel {
    * @returns the status of the delete request
    */
   async delete(deleteParams?: RecordDeleteParams): Promise<DwnResponseStatus> {
-    const { store, signAsOwner, dateModified, ...params } = deleteParams || {};
+    const { store = true, signAsOwner, dateModified, prune = false } = deleteParams || {};
+
+    const signAsOwnerValue = signAsOwner && this._delegateDid === undefined;
+    const signAsOwnerDelegate = signAsOwner && this._delegateDid !== undefined;
+
+    if (this.deleted && !this._initialWrite) {
+      throw new Error('Record: Record is in an invalid state, initial write is missing.');
+    }
+
+    if (!this._initialWrite) {
+      // If there is no initial write, we need to create one from the current record state.
+      // We checked in the beginning of the function that the initialWrite is not set if the rawMessage is a RecordsDelete message.
+      // So we can safely assume that the rawMessage is a RecordsWrite message.
+      this._initialWrite = { ...this.rawMessage as DwnMessage[DwnInterface.RecordsWrite] };
+    }
+
+    await this.processInitialWriteIfNeeded({ store, signAsOwner });
 
     // prepare delete options
     let deleteOptions: ProcessDwnRequest<DwnInterface.RecordsDelete> = {
       messageType : DwnInterface.RecordsDelete,
       author      : this._connectedDid,
       target      : this._connectedDid,
-      store,
-      signAsOwner
+      signAsOwner : signAsOwnerValue,
+      signAsOwnerDelegate,
+      store
     };
 
     if (this.deleted) {
-      if (!this._initialWrite) {
-        // if the rawMessage is a `RecordsDelete` the initial message must be set.
-        // this should never happen, but we check as a form of defensive programming.
-        throw new Error('If initial write is not set, the current rawRecord must be a RecordsWrite message.');
-      }
-
       // if we have a delete message we can just use it
       deleteOptions.rawMessage = this.rawMessage as DwnMessage[DwnInterface.RecordsDelete];
     } else {
       // otherwise we construct a delete message given the `RecordDeleteParams`
       deleteOptions.messageParams = {
-        ...params,
+        prune            : prune,
         recordId         : this._recordId,
         messageTimestamp : dateModified,
       };
+    }
+
+    if (this._delegateDid) {
+      const { message: delegatedGrant } = await this._permissionsApi.getPermissionForRequest({
+        connectedDid : this._connectedDid,
+        delegateDid  : this._delegateDid,
+        protocol     : this.protocol,
+        delegate     : true,
+        cached       : true,
+        messageType  : deleteOptions.messageType
+      });
+
+      deleteOptions.messageParams = {
+        ...deleteOptions.messageParams,
+        delegatedGrant
+      };
+
+      deleteOptions.granteeDid = this._delegateDid;
     }
 
     const agentResponse = await this._agent.processDwnRequest(deleteOptions);
@@ -790,13 +870,6 @@ export class Record implements RecordModel {
     if (status.code !== 202) {
       // If the delete was not successful, return the status.
       return { status };
-    }
-
-    if (!this._initialWrite) {
-      // If there is no initial write, we need to create one from the current record state.
-      // We checked in the beginning of the function that the initialWrite is not set if the rawMessage is a RecordsDelete message.
-      // So we can safely assume that the rawMessage is a RecordsWrite message.
-      this._initialWrite = { ...this.rawMessage as DwnMessage[DwnInterface.RecordsWrite] };
     }
 
     // If the delete was successful, update the Record author to the author of the delete message.
@@ -808,25 +881,46 @@ export class Record implements RecordModel {
     this._encodedData = undefined;
     this._encryption = undefined;
     this._attestation = undefined;
+    this._contextId = undefined;
 
     return { status };
   }
 
   /**
-   * Handles the various conditions around there being an initial write, whether to store initial/current state,
-   * and whether to add an owner signature to the initial write to enable storage when protocol rules require it.
+   * Process the initial write, if it hasn't already been processed, with the options set for storing and/or signing as the owner.
    */
-  private async processRecord({ store, signAsOwner }:{ store: boolean, signAsOwner: boolean }): Promise<DwnResponseStatus> {
-    // if there is an initial write and we haven't already processed it, we first process it and marked it as such.
-    if (this._initialWrite && ((signAsOwner && !this._initialWriteSigned) || (store && !this._initialWriteStored))) {
+  private async processInitialWriteIfNeeded({ store, signAsOwner }:{ store: boolean, signAsOwner: boolean }): Promise<void> {
+    if (this.initialWrite && ((signAsOwner && !this._initialWriteSigned) || (store && !this._initialWriteStored))) {
+      const signAsOwnerValue = signAsOwner && this._delegateDid === undefined;
+      const signAsOwnerDelegate = signAsOwner && this._delegateDid !== undefined;
+
       const initialWriteRequest: ProcessDwnRequest<DwnInterface.RecordsWrite> = {
         messageType : DwnInterface.RecordsWrite,
         rawMessage  : this.initialWrite,
         author      : this._connectedDid,
         target      : this._connectedDid,
-        signAsOwner,
+        signAsOwner : signAsOwnerValue,
+        signAsOwnerDelegate,
         store,
       };
+
+      if (this._delegateDid) {
+        const { message: delegatedGrant } = await this._permissionsApi.getPermissionForRequest({
+          connectedDid : this._connectedDid,
+          delegateDid  : this._delegateDid,
+          protocol     : this.protocol,
+          delegate     : true,
+          cached       : true,
+          messageType  : initialWriteRequest.messageType
+        });
+
+        initialWriteRequest.messageParams = {
+          ...initialWriteRequest.messageParams,
+          delegatedGrant
+        };
+
+        initialWriteRequest.granteeDid = this._delegateDid;
+      }
 
       // Process the prepared initial write, with the options set for storing and/or signing as the owner.
       const agentResponse = await this._agent.processDwnRequest(initialWriteRequest);
@@ -834,8 +928,6 @@ export class Record implements RecordModel {
       const { message, reply: { status } } = agentResponse;
       const responseMessage = message;
 
-      // If we are signing as owner, make sure to update the initial write's authorization, because now it will have the owner's signature on it
-      // set the stored or signed status to true so we don't process it again.
       if (200 <= status.code && status.code <= 299) {
         if (store) this._initialWriteStored = true;
         if (signAsOwner) {
@@ -844,17 +936,29 @@ export class Record implements RecordModel {
         }
       }
     }
+  }
+
+  /**
+   * Handles the various conditions around there being an initial write, whether to store initial/current state,
+   * and whether to add an owner signature to the initial write to enable storage when protocol rules require it.
+   */
+  private async processRecord({ store, signAsOwner }:{ store: boolean, signAsOwner: boolean }): Promise<DwnResponseStatus> {
+    const signAsOwnerValue = signAsOwner && this._delegateDid === undefined;
+    const signAsOwnerDelegate = signAsOwner && this._delegateDid !== undefined;
+
+    await this.processInitialWriteIfNeeded({ store, signAsOwner });
 
     let requestOptions: ProcessDwnRequest<DwnInterface.RecordsWrite | DwnInterface.RecordsDelete>;
     // Now that we've processed a potential initial write, we can process the current record state.
     // If the record has been deleted, we need to send a delete request. Otherwise, we send a write request.
-    if(this.deleted) {
+    if (this.deleted) {
       requestOptions = {
         messageType : DwnInterface.RecordsDelete,
         rawMessage  : this.rawMessage,
         author      : this._connectedDid,
         target      : this._connectedDid,
-        signAsOwner,
+        signAsOwner : signAsOwnerValue,
+        signAsOwnerDelegate,
         store,
       };
     } else {
@@ -864,9 +968,28 @@ export class Record implements RecordModel {
         author      : this._connectedDid,
         target      : this._connectedDid,
         dataStream  : await this.data.blob(),
-        signAsOwner,
+        signAsOwner : signAsOwnerValue,
+        signAsOwnerDelegate,
         store,
       };
+    }
+
+    if (this._delegateDid) {
+      const { message: delegatedGrant } = await this._permissionsApi.getPermissionForRequest({
+        connectedDid : this._connectedDid,
+        delegateDid  : this._delegateDid,
+        protocol     : this.protocol,
+        delegate     : true,
+        cached       : true,
+        messageType  : requestOptions.messageType
+      });
+
+      requestOptions.messageParams = {
+        ...requestOptions.messageParams,
+        delegatedGrant
+      };
+
+      requestOptions.granteeDid = this._delegateDid;
     }
 
     const agentResponse = await this._agent.processDwnRequest(requestOptions);
@@ -904,6 +1027,35 @@ export class Record implements RecordModel {
       messageType   : DwnInterface.RecordsRead,
       target,
     };
+
+    if (this._delegateDid) {
+      // When reading the data as a delegate, if we don't find a grant we will attempt to read it with the delegate DID as the author.
+      // This allows users to read publicly available data without needing explicit grants.
+      //
+      // NOTE: When a read-only Record class is implemented, callers would have that returned instead when they don't have an explicit permission.
+      // This should fail if a permission is not found, although it should not happen in practice.
+      // TODO: https://github.com/TBD54566975/web5-js/issues/898
+      try {
+        const { message: delegatedGrant } = await this._permissionsApi.getPermissionForRequest({
+          connectedDid : this._connectedDid,
+          delegateDid  : this._delegateDid,
+          protocol     : this.protocol,
+          delegate     : true,
+          cached       : true,
+          messageType  : readRequest.messageType
+        });
+
+        readRequest.messageParams = {
+          ...readRequest.messageParams,
+          delegatedGrant
+        };
+
+        readRequest.granteeDid = this._delegateDid;
+      } catch(error) {
+        // If there is an error fetching the grant, we will attempt to read the data as the delegate.
+        readRequest.author = this._delegateDid;
+      }
+    }
 
     const agentResponsePromise = isRemote ?
       this._agent.sendDwnRequest(readRequest) :
@@ -948,5 +1100,14 @@ export class Record implements RecordModel {
         throw new Error(`${property} is an immutable property. Its value cannot be changed.`);
       }
     }
+  }
+
+  /**
+   * Checks if the descriptor is a RecordsDelete descriptor.
+   *
+   * @param descriptor a RecordsWrite or RecordsDelete descriptor
+   */
+  private isRecordsDeleteDescriptor(descriptor: DwnMessageDescriptor[DwnInterface.RecordsWrite | DwnInterface.RecordsDelete]): descriptor is DwnMessageDescriptor[DwnInterface.RecordsDelete] {
+    return descriptor.interface + descriptor.method === DwnInterface.RecordsDelete;
   }
 }

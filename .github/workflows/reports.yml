@@ -34,10 +34,10 @@ jobs:
           echo "DWN_SERVER_BACKGROUND_PROCESS=$!" >> $GITHUB_ENV
 
       - name: Build tests for all packages
-        run: pnpm --recursive --stream --sequential build:tests:node
+        run: pnpm --recursive --stream build:tests:node
 
       - name: Run tests for all packages
-        run: pnpm --recursive --stream exec c8 mocha -- --color --reporter mocha-junit-reporter --reporter-options mochaFile=./results.xml
+        run: pnpm --recursive --filter '!browser' --stream exec c8 mocha -- --color --reporter mocha-junit-reporter --reporter-options mochaFile=./results.xml
         env:
           TEST_DWN_URL: http://localhost:3000
 
@@ -72,4 +72,3 @@ jobs:
           https://api.github.com/repos/TBD54566975/sdk-report-runner/actions/workflows/build-report.yaml/dispatches
         env:
           APP_TOKEN: ${{ steps.generate_token.outputs.token }}
-

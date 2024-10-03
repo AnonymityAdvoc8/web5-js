@@ -1,6 +1,6 @@
 {
   "name": "@web5/proxy-agent",
-  "version": "0.4.1",
+  "version": "0.6.4",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -70,9 +70,9 @@
   },
   "dependencies": {
     "@web5/agent": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent",
-    "@web5/common": "1.0.0",
-    "@web5/crypto": "1.0.0",
-    "@continuum5/dids": "0.0.1"
+    "@web5/common": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common",
+    "@web5/crypto": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto",
+    "@continuum5/dids": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids"
   },
   "devDependencies": {
     "@playwright/test": "1.45.3",
@@ -81,7 +81,7 @@
     "@types/dns-packet": "5.6.4",
     "@types/eslint": "8.56.10",
     "@types/mocha": "10.0.1",
-    "@types/node": "20.11.19",
+    "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "7.9.0",
     "@typescript-eslint/parser": "7.14.1",
     "@web/test-runner": "0.18.2",

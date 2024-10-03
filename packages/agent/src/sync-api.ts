@@ -1,4 +1,4 @@
-import type { SyncEngine } from './types/sync.js';
+import type { SyncEngine, SyncIdentityOptions } from './types/sync.js';
 import type { Web5PlatformAgent } from './types/agent.js';
 
 export type SyncApiParams = {
@@ -41,15 +41,31 @@ export class AgentSyncApi implements SyncEngine {
     this._syncEngine.agent = agent;
   }
 
-  public async registerIdentity(params: { did: string; }): Promise<void> {
+  public async registerIdentity(params: { did: string; options?: SyncIdentityOptions }): Promise<void> {
     await this._syncEngine.registerIdentity(params);
+  }
+
+  public async unregisterIdentity(did: string): Promise<void> {
+    await this._syncEngine.unregisterIdentity(did);
+  }
+
+  public async getIdentityOptions(did: string): Promise<SyncIdentityOptions | undefined> {
+    return await this._syncEngine.getIdentityOptions(did);
+  }
+
+  public async updateIdentityOptions(params: { did: string, options: SyncIdentityOptions }): Promise<void> {
+    await this._syncEngine.updateIdentityOptions(params);
+  }
+
+  public sync(direction?: 'push' | 'pull'): Promise<void> {
+    return this._syncEngine.sync(direction);
   }
 
   public startSync(params: { interval: string; }): Promise<void> {
     return this._syncEngine.startSync(params);
   }
 
-  public stopSync(): void {
-    this._syncEngine.stopSync();
+  public stopSync(timeout?: number): Promise<void> {
+    return this._syncEngine.stopSync(timeout);
   }
 }

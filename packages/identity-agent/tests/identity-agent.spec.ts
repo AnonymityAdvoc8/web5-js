@@ -23,7 +23,7 @@ describe('Web5IdentityAgent', () => {
   describe('agentDid', () => {
     it('throws an error if accessed before the Agent is initialized', async () => {
       // @ts-expect-error - Initializing with empty object to test error.
-      const identityAgent = new Web5IdentityAgent({ didApi: {}, dwnApi: {}, identityApi: {}, keyManager: {}, syncApi: {} });
+      const identityAgent = new Web5IdentityAgent({ didApi: {}, dwnApi: {}, identityApi: {}, keyManager: {}, syncApi: {}, permissionsApi: {} });
       try {
         identityAgent.agentDid;
         throw new Error('Expected an error');
@@ -331,15 +331,6 @@ describe('Web5IdentityAgent', () => {
               }
             };
 
-            await testHarness.preloadResolverCache({
-              didUri           : testPortableIdentity.portableDid.uri,
-              resolutionResult : {
-                didDocument           : testPortableIdentity.portableDid.document,
-                didDocumentMetadata   : testPortableIdentity.portableDid.metadata,
-                didResolutionMetadata : {}
-              }
-            });
-
             alice = await testHarness.agent.identity.import({
               portableIdentity: testPortableIdentity
             });
@@ -415,8 +406,7 @@ describe('Web5IdentityAgent', () => {
 
             // Try to get the identity and verify it exists.
             const storedIdentity = await testHarness.agent.identity.get({
-              didUri : socialIdentity.did.uri,
-              tenant : socialIdentity.did.uri
+              didUri: socialIdentity.did.uri,
             });
 
             expect(storedIdentity).to.exist;

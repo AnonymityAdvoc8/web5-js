@@ -1,4 +1,4 @@
-import type {
+import {
   Web5Rpc,
   DidRequest,
   VcResponse,
@@ -11,6 +11,8 @@ import type {
   ProcessVcRequest,
   ProcessDwnRequest,
   Web5PlatformAgent,
+  AgentPermissionsApi,
+  AgentDidResolverCache,
 } from '@web5/agent';
 
 import { LevelStore } from '@web5/common';
@@ -51,6 +53,16 @@ export type AgentInitializeParams = {
    * If omitted, a new phrase is generated, which should be securely recorded for future recovery needs.
    */
    recoveryPhrase?: string;
+
+  /**
+   * Optional dwnEndpoints to register didService endpoints during Web5UserAgent initialization
+   *
+   * The dwnEndpoints are used to register DWN endpoints against the agent DID created during
+   * Web5UserAgent.initialize() =>  DidDht.create(). This allows the
+   * agent to properly recover connectedDids from DWN. Also, this pattern can be used on the server
+   * side in place of the agentDid-->connectedDids pattern.
+   */
+   dwnEndpoints?: string[];
  };
 
 export type AgentStartParams = {
@@ -77,6 +89,8 @@ export type AgentParams<TKeyManager extends AgentKeyManager = LocalKeyManager> =
   identityApi: AgentIdentityApi<TKeyManager>;
   /** Responsible for securely managing the cryptographic keys of the agent. */
   keyManager: TKeyManager;
+  /** Facilitates fetching, requesting, creating, revoking and validating revocation status of permissions */
+  permissionsApi: AgentPermissionsApi;
   /** Remote procedure call (RPC) client used to communicate with other Web5 services. */
   rpcClient: Web5Rpc;
   /** Facilitates data synchronization of DWN records between nodes. */
@@ -89,6 +103,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
   public dwn: AgentDwnApi;
   public identity: AgentIdentityApi<TKeyManager>;
   public keyManager: TKeyManager;
+  public permissions: AgentPermissionsApi;
   public rpc: Web5Rpc;
   public sync: AgentSyncApi;
   public vault: HdIdentityVault;
@@ -102,6 +117,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
     this.dwn = params.dwnApi;
     this.identity = params.identityApi;
     this.keyManager = params.keyManager;
+    this.permissions = params.permissionsApi;
     this.rpc = params.rpcClient;
     this.sync = params.syncApi;
     this.vault = params.agentVault;
@@ -111,6 +127,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
     this.dwn.agent = this;
     this.identity.agent = this;
     this.keyManager.agent = this;
+    this.permissions.agent = this;
     this.sync.agent = this;
   }
 
@@ -133,7 +150,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
    */
   public static async create({
     dataPath = 'DATA/AGENT',
-    agentDid, agentVault, cryptoApi, didApi, dwnApi, identityApi, keyManager, rpcClient, syncApi
+    agentDid, agentVault, cryptoApi, didApi, dwnApi, identityApi, keyManager, permissionsApi, rpcClient, syncApi
   }: Partial<AgentParams> = {}
   ): Promise<Web5UserAgent> {
 
@@ -146,7 +163,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
 
     didApi ??= new AgentDidApi({
       didMethods    : [DidDht, DidJwk],
-      resolverCache : new DidResolverCacheLevel({ location: `${dataPath}/DID_RESOLVERCACHE` }),
+      resolverCache : new AgentDidResolverCache({ location: `${dataPath}/DID_RESOLVERCACHE` }),
       store         : new DwnDidStore()
     });
 
@@ -157,6 +174,8 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
     identityApi ??= new AgentIdentityApi({ store: new DwnIdentityStore() });
 
     keyManager ??= new LocalKeyManager({ keyStore: new DwnKeyStore() });
+
+    permissionsApi ??= new AgentPermissionsApi();
 
     rpcClient ??= new Web5RpcClient();
 
@@ -170,6 +189,7 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
       didApi,
       dwnApi,
       keyManager,
+      permissionsApi,
       identityApi,
       rpcClient,
       syncApi
@@ -192,9 +212,9 @@ export class Web5UserAgent<TKeyManager extends AgentKeyManager = LocalKeyManager
    * cryptographic keys for the vault. If a recovery phrase is not provided, a new recovery phrase
    * will be generated and returned. The password should be chosen and entered by the end-user.
    */
-  public async initialize({ password, recoveryPhrase }: AgentInitializeParams): Promise<string> {
+  public async initialize({ password, recoveryPhrase, dwnEndpoints }: AgentInitializeParams): Promise<string> {
     // Initialize the Agent vault.
-    recoveryPhrase = await this.vault.initialize({ password, recoveryPhrase });
+    recoveryPhrase = await this.vault.initialize({ password, recoveryPhrase, dwnEndpoints });
 
     return recoveryPhrase;
   }

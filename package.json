@@ -12,14 +12,15 @@
     "packages/user-agent",
     "packages/proxy-agent",
     "packages/api",
-    "packages/identity-agent"
+    "packages/identity-agent",
+    "packages/browser"
   ],
   "scripts": {
     "clean": "pnpm npkill -d $(pwd)/packages -t dist && pnpm npkill -d $(pwd) -t node_modules",
     "build": "pnpm --recursive --stream build",
-    "dwn-server": "DWN_SERVER_PACKAGE_JSON=node_modules/@web5/dwn-server/package.json node node_modules/@web5/dwn-server/dist/esm/src/main.js || true",
     "test:node": "pnpm --recursive test:node",
-    "audit-ci": "audit-ci --config ./audit-ci.json"
+    "audit-ci": "audit-ci --config ./audit-ci.json",
+    "wallet:connect:example": "npx http-server -c-1 & HTTP_SERVER_PID=$! && sleep 2 && open 'http://localhost:8080/examples/wallet-connect.html' && wait $HTTP_SERVER_PID"
   },
   "repository": {
     "type": "git",
@@ -31,9 +32,10 @@
     "@changesets/cli": "^2.27.5",
     "@npmcli/package-json": "5.0.0",
     "@typescript-eslint/eslint-plugin": "7.9.0",
-    "@web5/dwn-server": "0.4.3",
+    "@web5/dwn-server": "0.4.10",
     "audit-ci": "^7.0.1",
     "eslint-plugin-mocha": "10.4.3",
+    "globals": "^13.24.0",
     "npkill": "0.11.3"
   },
   "pnpm": {
@@ -42,7 +44,20 @@
       "ws@<8.17.1": ">=8.17.1",
       "braces@<3.0.3": ">=3.0.3",
       "fast-xml-parser@<4.4.1": ">=4.4.1",
-      "@75lb/deep-merge@<1.1.2": ">=1.1.2"
+      "@75lb/deep-merge@<1.1.2": ">=1.1.2",
+      "elliptic@>=4.0.0 <=6.5.6": ">=6.5.7",
+      "elliptic@>=2.0.0 <=6.5.6": ">=6.5.7",
+      "elliptic@>=5.2.1 <=6.5.6": ">=6.5.7",
+      "micromatch@<4.0.8": ">=4.0.8",
+      "webpack@<5.94.0": ">=5.94.0",
+      "webpack@>=5.0.0-alpha.0 <5.94.0": ">=5.94.0",
+      "path-to-regexp@>=0.2.0 <8.0.0": ">=8.0.0",
+      "path-to-regexp@<0.1.10": ">=0.1.10",
+      "body-parser@<1.20.3": ">=1.20.3",
+      "send@<0.19.0": ">=0.19.0",
+      "serve-static@<1.16.0": ">=1.16.0",
+      "express@<4.20.0": ">=4.20.0",
+      "rollup@>=4.0.0 <4.22.4": ">=4.22.4"
     }
   }
 }

@@ -5,4 +5,4 @@
 "@web5/user-agent": patch
 ---
 
-Apply logic to sign messages with grants, add utils for dealing with grants
+Enable EventEmitterStream

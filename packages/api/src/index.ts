@@ -23,11 +23,13 @@
 
 export * from './did-api.js';
 export * from './dwn-api.js';
+export * from './grant-revocation.js';
+export * from './permission-grant.js';
+export * from './permission-request.js';
 export * from './protocol.js';
 export * from './record.js';
 export * from './vc-api.js';
 export * from './web5.js';
-export * from './web-features.js';
 
 import * as utils from './utils.js';
 export { utils };

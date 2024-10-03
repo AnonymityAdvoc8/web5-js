@@ -11,13 +11,13 @@ import { expect } from 'chai';
 
 import type { PortableIdentity } from '../src/types/identity.js';
 
-import { DwnInterface } from '../src/types/dwn.js';
+import { DwnInterface, DwnPermissionScope } from '../src/types/dwn.js';
 import { BearerIdentity } from '../src/bearer-identity.js';
 import emailProtocolDefinition from './fixtures/protocol-definitions/email.json' assert { type: 'json' };
 import { PlatformAgentTestHarness } from '../src/test-harness.js';
 import { TestAgent } from './utils/test-agent.js';
 import { testDwnUrl } from './utils/test-config.js';
-import { AgentDwnApi, isDwnMessage } from '../src/dwn-api.js';
+import { AgentDwnApi, isDwnMessage, isMessagesPermissionScope, isRecordPermissionScope } from '../src/dwn-api.js';
 
 // NOTE: @noble/secp256k1 requires globalThis.crypto polyfill for node.js <=18: https://github.com/paulmillr/noble-secp256k1/blob/main/README.md#usage
 // Remove when we move off of node.js v18 to v20, earliest possible time would be Oct 2023: https://github.com/nodejs/release#release-schedule
@@ -37,11 +37,13 @@ describe('AgentDwnApi', () => {
     });
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     sinon.restore();
   });
 
   after(async () => {
+    sinon.restore();
+    await testHarness.clearStorage();
     await testHarness.closeStorage();
   });
 
@@ -757,24 +759,13 @@ describe('AgentDwnApi', () => {
       });
 
       // create teh grant
-      const recordsWriteDelegateGrant = await testHarness.agent.dwn.createGrant({
-        grantedFrom : alice.did.uri,
+      const recordsWriteDelegateGrant = await testHarness.agent.permissions.createGrant({
+        author      : alice.did.uri,
         grantedTo   : aliceDeviceX.did.uri,
         dateExpires : Time.createOffsetTimestamp({ seconds: 60 }),
         delegated   : true,
         scope       : { interface: DwnInterfaceName.Records, method: DwnMethodName.Write, protocol: protocolDefinition.protocol }
       });
-
-      // process the grant on alice's DWN
-      let { reply: { status: grantStatus } } = await testHarness.agent.dwn.processRequest({
-        author      : alice.did.uri,
-        target      : alice.did.uri,
-        messageType : DwnInterface.RecordsWrite,
-        rawMessage  : recordsWriteDelegateGrant.recordsWrite.message,
-        dataStream  : new Blob([ recordsWriteDelegateGrant.permissionGrantBytes ]),
-      });
-      expect(grantStatus.code).to.equal(202, 'grant write');
-
 
       // bob authors a public record to his dwn
       const dataStream = new Blob([ Convert.string('Hello, world!').toUint8Array() ]);
@@ -844,7 +835,7 @@ describe('AgentDwnApi', () => {
         granteeDid          : aliceDeviceX.did.uri,
         messageParams       : {
           dataFormat     : 'text/plain', // TODO: not necessary
-          delegatedGrant : recordsWriteDelegateGrant.dataEncodedMessage,
+          delegatedGrant : recordsWriteDelegateGrant.message,
         },
         dataStream,
       });
@@ -1090,15 +1081,6 @@ describe('AgentDwnApi', () => {
           uri    : 'did:dht:ugkhixpk56o9izfp4ucc543scj5ajcis3rkh43yueq98qiaj8tgy'
         }
       };
-
-      await testHarness.preloadResolverCache({
-        didUri           : testPortableIdentity.portableDid.uri,
-        resolutionResult : {
-          didDocument           : testPortableIdentity.portableDid.document,
-          didDocumentMetadata   : testPortableIdentity.portableDid.metadata,
-          didResolutionMetadata : {}
-        }
-      });
 
       alice = await testHarness.agent.identity.import({
         portableIdentity: testPortableIdentity
@@ -1849,17 +1831,6 @@ describe('AgentDwnApi', () => {
         store      : false
       });
 
-      // Since the DID DHT document wasn't published, add the DID DHT document to the resolver
-      // cache so that DID resolution will succeed during the dereferencing operation.
-      await testHarness.preloadResolverCache({
-        didUri           : identity.did.uri,
-        resolutionResult : {
-          didDocument           : identity.did.document,
-          didDocumentMetadata   : identity.did.metadata,
-          didResolutionMetadata : {}
-        }
-      });
-
       try {
         await testHarness.agent.dwn.sendRequest({
           author        : identity.did.uri,
@@ -1943,5 +1914,49 @@ describe('isDwnMessage', () => {
     // negative tests
     expect(isDwnMessage(DwnInterface.RecordsQuery, recordsWriteMessage)).to.be.false;
     expect(isDwnMessage(DwnInterface.RecordsWrite, recordsQueryMessage)).to.be.false;
+  });
+});
+
+describe('isRecordPermissionScope', () => {
+  it('asserts the type of RecordPermissionScope', async () => {
+    // messages read scope to test negative case
+    const messagesReadScope:DwnPermissionScope = {
+      interface : DwnInterfaceName.Messages,
+      method    : DwnMethodName.Read
+    };
+
+    expect(isRecordPermissionScope(messagesReadScope)).to.be.false;
+
+    // records read scope to test positive case
+    const recordsReadScope:DwnPermissionScope = {
+      interface : DwnInterfaceName.Records,
+      method    : DwnMethodName.Read,
+      protocol  : 'https://schemas.xyz/example'
+    };
+
+    expect(isRecordPermissionScope(recordsReadScope)).to.be.true;
+  });
+});
+
+describe('isMessagesPermissionScope', () => {
+  it('asserts the type of RecordPermissionScope', async () => {
+
+    // records read scope to test negative case
+    const recordsReadScope:DwnPermissionScope = {
+      interface : DwnInterfaceName.Records,
+      method    : DwnMethodName.Read,
+      protocol  : 'https://schemas.xyz/example'
+    };
+
+    expect(isMessagesPermissionScope(recordsReadScope)).to.be.false;
+
+    // messages read scope to test positive case
+    const messagesReadScope:DwnPermissionScope = {
+      interface : DwnInterfaceName.Messages,
+      method    : DwnMethodName.Read
+    };
+
+    expect(isMessagesPermissionScope(messagesReadScope)).to.be.true;
+
   });
 });

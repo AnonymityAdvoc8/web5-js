@@ -9,6 +9,7 @@ import { DidDht, DidJwk, DidContinuum, DidResolutionResult, DidResolverCache, Di
 import type { Web5PlatformAgent } from './types/agent.js';
 
 import { AgentDidApi } from './did-api.js';
+import { AgentDidResolverCache } from './agent-did-resolver-cache.js';
 import { AgentDwnApi } from './dwn-api.js';
 import { AgentSyncApi } from './sync-api.js';
 import { Web5RpcClient } from './rpc-client.js';
@@ -22,6 +23,7 @@ import { DwnDidStore, InMemoryDidStore } from './store-did.js';
 import { DwnKeyStore, InMemoryKeyStore } from './store-key.js';
 import { DwnIdentityStore, InMemoryIdentityStore } from './store-identity.js';
 import { DidResolverCacheMemory } from './prototyping/dids/resolver-cache-memory.js';
+import { AgentPermissionsApi } from './permissions-api.js';
 
 type PlatformAgentTestHarnessParams = {
   agent: Web5PlatformAgent<LocalKeyManager>
@@ -41,12 +43,6 @@ type PlatformAgentTestHarnessParams = {
     didStore: DwnDidStore;
     clear: () => void;
   }
-}
-
-type PlatformAgentTestHarnessSetupParams = {
-  agentClass: new (params: any) => Web5PlatformAgent<LocalKeyManager>
-  agentStores?: 'dwn' | 'memory';
-  testDataLocation?: string;
 }
 
 export class PlatformAgentTestHarness {
@@ -89,6 +85,9 @@ export class PlatformAgentTestHarness {
   }
 
   public async clearStorage(): Promise<void> {
+    // first stop any ongoing sync operations
+    await this.agent.sync.stopSync();
+
     // @ts-expect-error since normally this property shouldn't be set to undefined.
     this.agent.agentDid = undefined;
     await this.didResolverCache.clear();
@@ -98,6 +97,7 @@ export class PlatformAgentTestHarness {
     await this.dwnResumableTaskStore.clear();
     await this.syncStore.clear();
     await this.vaultStore.clear();
+    await this.agent.permissions.clear();
     this.dwnStores.clear();
 
     // Reset the indexes and caches for the Agent's DWN data stores.
@@ -110,10 +110,11 @@ export class PlatformAgentTestHarness {
 
     // Easiest way to start with fresh in-memory stores is to re-instantiate Agent components.
     if (this.agentStores === 'memory') {
-      const { didApi, identityApi, keyManager } = PlatformAgentTestHarness.useMemoryStores({ agent: this.agent });
+      const { didApi, identityApi, permissionsApi, keyManager } = PlatformAgentTestHarness.useMemoryStores({ agent: this.agent });
       this.agent.did = didApi;
       this.agent.identity = identityApi;
       this.agent.keyManager = keyManager;
+      this.agent.permissions = permissionsApi;
     }
   }
 
@@ -169,16 +170,11 @@ export class PlatformAgentTestHarness {
     return bearerIdentity;
   }
 
-  public async preloadResolverCache({ didUri, resolutionResult }: {
-    didUri: string;
-    resolutionResult: DidResolutionResult;
-  }): Promise<void> {
-    await this.didResolverCache.set(didUri, resolutionResult);
-  }
-
-  public static async setup({ agentClass, agentStores, testDataLocation }:
-    PlatformAgentTestHarnessSetupParams
-  ): Promise<PlatformAgentTestHarness> {
+  public static async setup({ agentClass, agentStores, testDataLocation }: {
+      agentClass: new (params: any) => Web5PlatformAgent<LocalKeyManager>
+      agentStores?: 'dwn' | 'memory';
+      testDataLocation?: string;
+    }): Promise<PlatformAgentTestHarness> {
     agentStores ??= 'memory';
     testDataLocation ??= '__TESTDATA__';
 
@@ -207,7 +203,8 @@ export class PlatformAgentTestHarness {
       identityApi,
       keyManager,
       didResolverCache,
-      vaultStore
+      vaultStore,
+      permissionsApi
     } = (agentStores === 'memory')
       ? PlatformAgentTestHarness.useMemoryStores()
       : PlatformAgentTestHarness.useDiskStores({ testDataLocation, stores: dwnStores });
@@ -251,6 +248,7 @@ export class PlatformAgentTestHarness {
       dwnApi,
       identityApi,
       keyManager,
+      permissionsApi,
       rpcClient,
       syncApi,
     });
@@ -287,7 +285,7 @@ export class PlatformAgentTestHarness {
     const { didStore, identityStore, keyStore } = stores;
 
     // Setup DID Resolver Cache
-    const didResolverCache = new DidResolverCacheLevel({
+    const didResolverCache = new AgentDidResolverCache({
       location: testDataPath('DID_RESOLVERCACHE')
     });
 
@@ -302,7 +300,9 @@ export class PlatformAgentTestHarness {
 
     const keyManager = new LocalKeyManager({ agent, keyStore: keyStore });
 
-    return { agentVault, didApi, didResolverCache, identityApi, keyManager, vaultStore };
+    const permissionsApi = new AgentPermissionsApi({ agent });
+
+    return { agentVault, didApi, didResolverCache, identityApi, keyManager, permissionsApi, vaultStore };
   }
 
   private static useMemoryStores({ agent }: { agent?: Web5PlatformAgent<LocalKeyManager> } = {}) {
@@ -323,6 +323,8 @@ export class PlatformAgentTestHarness {
 
     const identityApi = new AgentIdentityApi<LocalKeyManager>({ agent, store: new InMemoryIdentityStore() });
 
-    return { agentVault, didApi, didResolverCache, identityApi, keyManager, vaultStore };
+    const permissionsApi = new AgentPermissionsApi({ agent });
+
+    return { agentVault, didApi, didResolverCache, identityApi, keyManager, permissionsApi, vaultStore };
   }
 }

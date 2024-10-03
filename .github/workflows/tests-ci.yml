@@ -57,14 +57,14 @@ jobs:
 
       - name: Run dwn-server (background)
         run: |
-          node node_modules/@web5/dwn-server/dist/esm/src/main.js &
+          npx @web5/dwn-server &
           echo "DWN_SERVER_BACKGROUND_PROCESS=$!" >> $GITHUB_ENV
 
       - name: Build tests for all packages
         run: pnpm --recursive --stream --sequential build:tests:node
 
       - name: Run tests for all packages
-        run: pnpm --recursive --stream exec c8 mocha -- --color
+        run: pnpm --recursive --filter '!browser' --stream exec c8 mocha -- --color
         env:
           TEST_DWN_URL: http://localhost:3000
 
@@ -72,7 +72,7 @@ jobs:
         run: kill $DWN_SERVER_BACKGROUND_PROCESS || true
 
       - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673 #v4.5.0
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -89,7 +89,7 @@ jobs:
           - group: "B"
             packages: "--filter dids --filter identity-agent"
           - group: "C"
-            packages: "--filter api"
+            packages: "--filter api --filter browser"
           - group: "D"
             packages: "--filter crypto"
           - group: "E"
@@ -105,12 +105,6 @@ jobs:
         uses: cashapp/activate-hermit@v1
         with:
           cache: "true"
-
-      - name: Print Node.js, npm, & pnpm versions for debugging if needed
-        run: |
-          node -v
-          npm -v
-          pnpm -v
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile

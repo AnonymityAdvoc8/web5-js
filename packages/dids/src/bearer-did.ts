@@ -10,7 +10,7 @@ import type {
   EnclosedVerifyParams,
 } from '@web5/crypto';
 
-import { LocalKeyManager, utils as cryptoUtils } from '@web5/crypto';
+import { LocalKeyManager, CryptoUtils } from '@web5/crypto';
 
 import type { DidDocument } from './types/did-core.js';
 import type { DidMetadata, PortableDid } from './types/portable-did.js';
@@ -143,9 +143,9 @@ export class BearerDid {
 
     // Create a new `PortableDid` object to store the exported data.
     let portableDid: PortableDid = {
-      uri: this.uri,
-      document: this.document,
-      metadata: this.metadata,
+      uri      : this.uri,
+      document : this.document,
+      metadata : this.metadata,
     };
 
     // If the BearerDid's key manager supports exporting private keys, add them to the portable DID.
@@ -256,12 +256,11 @@ export class BearerDid {
     const keyManager = this.keyManager;
 
     // Determine the signing algorithm.
-    const algorithm =
-      cryptoUtils.getJoseSignatureAlgorithmFromPublicKey(publicKey);
+    const algorithm = CryptoUtils.getJoseSignatureAlgorithmFromPublicKey(publicKey);
 
     return {
-      algorithm: algorithm,
-      keyId: tempVerificationMethod.id,
+      algorithm : algorithm,
+      keyId     : tempVerificationMethod.id,
 
       async sign({ data }: EnclosedSignParams): Promise<Uint8Array> {
         const signature = await keyManager.sign({ data, keyUri: keyUri! }); // `keyUri` is guaranteed to be defined at this point.
@@ -366,9 +365,9 @@ export class BearerDid {
 
     // Use the given PortableDid to construct the BearerDid object.
     const did = new BearerDid({
-      uri: portableDid.uri,
-      document: portableDid.document,
-      metadata: portableDid.metadata,
+      uri      : portableDid.uri,
+      document : portableDid.document,
+      metadata : portableDid.metadata,
       keyManager,
     });
 

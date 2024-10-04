@@ -119,7 +119,7 @@ export const DWeb = {
       }
       let agentDid = await BearerDid.import({ portableDid: did });
       const agent = DWeb.agent = await Web5UserAgent.create({ agentDid });
-      agent.sync.startSync({ interval: options.syncInterval || '2m' }).catch((error) => {
+      agent.sync.startSync({ interval: options.syncInterval || '5s' }).catch((error) => {
         console.error(`Sync failed: ${error}`);
       });
       resolve(DWeb.agent);
@@ -240,3 +240,5 @@ export const DWeb = {
         });
     }
   })();
+
+

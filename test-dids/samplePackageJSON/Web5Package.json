@@ -1,0 +1,23 @@
+{
+  "name": "test-dids",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@web5/agent": "^0.7.4",
+    "@web5/api": "^0.11.0",
+    "@web5/dids": "1.1.3",
+    "@web5/user-agent": "^0.6.4",
+    "ethers": "^6.13.2",
+    "jose": "^5.9.3",
+    "nodemon": "^3.1.7"
+  },
+  "type": "module"
+}

@@ -1,0 +1,31 @@
+const protocolDefinition = {
+  protocol: 'http://message-protocol.xyz',
+  published: true,
+  types: {
+    message: {
+      schema: 'http://message.me',
+      dataFormats: ['text/plain'],
+    },
+    attachment: {},
+  },
+  structure: {
+    message: {
+      $actions: [
+        {
+          who: 'anyone',
+          can: ['create', 'update'],
+        },
+      ],
+      attachment: {
+        $actions: [
+          {
+            who: 'anyone',
+            can: ['create', 'update'],
+          },
+        ],
+      },
+    },
+  },
+};
+
+export default protocolDefinition;

@@ -1,0 +1,109 @@
+{
+  "portableDid": {
+    "uri": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+    "document": {
+      "id": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+      "verificationMethod": [
+        {
+          "id": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#0",
+          "type": "JsonWebKey",
+          "controller": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+          "publicKeyJwk": {
+            "crv": "Ed25519",
+            "kty": "OKP",
+            "x": "GnZxyPTbcekEBgT4UxtDcuwJ6KTfbBxZO4uSWFoZUAo",
+            "kid": "w27PoI-95YcDsQ2CbRvel-Zgs0GeGZ0_vlkDBCzZCXM",
+            "alg": "EdDSA"
+          }
+        },
+        {
+          "id": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#sig",
+          "type": "JsonWebKey",
+          "controller": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+          "publicKeyJwk": {
+            "crv": "Ed25519",
+            "kty": "OKP",
+            "x": "_Zc9tTaYCD6B90xX7nAygSsYchKtNoGhHVE6jIZyoW8",
+            "kid": "pYJMiZMTWkbgQsXxKbXtw72iAvyT29Sm11JlzDIqZtI",
+            "alg": "EdDSA"
+          }
+        },
+        {
+          "id": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#enc",
+          "type": "JsonWebKey",
+          "controller": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+          "publicKeyJwk": {
+            "kty": "EC",
+            "crv": "secp256k1",
+            "x": "LMa4BxdD59LToNZ1AHThuMJgfhvVqmH0uO-4z7AhWe4",
+            "y": "5AwlqKdmGbptYIoY7m-GY6xDGfieQrogQRL9w5i4SzU",
+            "kid": "1Hf91Pfk-F05PA9AuaXG70gOp-axYqeOKw2ijLhsL-8",
+            "alg": "ES256K"
+          }
+        }
+      ],
+      "authentication": [
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#0",
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#sig"
+      ],
+      "assertionMethod": [
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#0",
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#sig"
+      ],
+      "capabilityDelegation": [
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#0"
+      ],
+      "capabilityInvocation": [
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#0"
+      ],
+      "keyAgreement": [
+        "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#enc"
+      ],
+      "service": [
+        {
+          "id": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy#dwn",
+          "type": "DecentralizedWebNode",
+          "serviceEndpoint": ["https://dwn.tbddev.org/latest"],
+          "enc": "#enc",
+          "sig": "#sig"
+        }
+      ]
+    },
+    "metadata": {
+      "published": true,
+      "versionId": "1727916853"
+    },
+    "privateKeys": [
+      {
+        "crv": "Ed25519",
+        "d": "roH0AEHuKnwBFLaWtEUYCdxu6OdL54lbeOndJfqK1Co",
+        "kty": "OKP",
+        "x": "GnZxyPTbcekEBgT4UxtDcuwJ6KTfbBxZO4uSWFoZUAo",
+        "kid": "w27PoI-95YcDsQ2CbRvel-Zgs0GeGZ0_vlkDBCzZCXM",
+        "alg": "EdDSA"
+      },
+      {
+        "crv": "Ed25519",
+        "d": "M-on8LUJLxfvAD7NBrYnt50SToriEarGzE5BQLQIfBQ",
+        "kty": "OKP",
+        "x": "_Zc9tTaYCD6B90xX7nAygSsYchKtNoGhHVE6jIZyoW8",
+        "kid": "pYJMiZMTWkbgQsXxKbXtw72iAvyT29Sm11JlzDIqZtI",
+        "alg": "EdDSA"
+      },
+      {
+        "kty": "EC",
+        "crv": "secp256k1",
+        "d": "UEmOxIgFeAWsC2LB3RyqAkEMoeCY1MDjhygG07EVM84",
+        "x": "LMa4BxdD59LToNZ1AHThuMJgfhvVqmH0uO-4z7AhWe4",
+        "y": "5AwlqKdmGbptYIoY7m-GY6xDGfieQrogQRL9w5i4SzU",
+        "kid": "1Hf91Pfk-F05PA9AuaXG70gOp-axYqeOKw2ijLhsL-8",
+        "alg": "ES256K"
+      }
+    ]
+  },
+  "metadata": {
+    "name": "Default",
+    "uri": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy",
+    "tenant": "did:dht:dj58d18w5pa61bygyuhfgg4dqmsyu4fr57sbasj5tqjfoso3kyfy"
+  }
+}

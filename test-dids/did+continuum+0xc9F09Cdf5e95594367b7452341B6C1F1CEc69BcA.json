@@ -1,0 +1,70 @@
+{
+  "portableDid": {
+    "uri": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+    "document": {
+      "id": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+      "verificationMethod": [
+        {
+          "id": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#controller",
+          "type": "EcdsaSecp256k1RecoveryMethod2020",
+          "controller": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+          "blockchainAccountId": "eip155:10999:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA"
+        },
+        {
+          "id": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#delegate-4",
+          "type": "JsonWebKey2020",
+          "controller": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+          "publicKeyJwk": {
+            "kty": "EC",
+            "crv": "secp256k1",
+            "x": "8QfchYlZYcT4b5H0y8jCySWC7DdisgWEzsKsUQZZ6gg",
+            "y": "95CLNdaeiPVBkvN0WLJpgSNSRZ3KkQ2cZTwCV7gL-5o"
+          }
+        },
+        {
+          "id": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#delegate-5",
+          "type": "Secp256k1",
+          "controller": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+          "publicKeyHex": "7b226964223a226469643a636f6e74696e75756d3a3078326166373a30786339463039436466356539353539343336376237343532333431423643314631434563363942634123766572696669636174696f6e2d6b6579222c2274797065223a224a736f6e5765624b657932303230222c22636f6e74726f6c6c6572223a226469643a636f6e74696e75756d3a3078326166373a307863394630394364663565393535393433363762373435323334314236433146314345633639426341222c227075626c69634b65794a776b223a7b226b7479223a224543222c22637276223a22736563703235366b31222c2278223a223851666368596c5a596354346235483079386a437953574337446469736757457a734b7355515a5a366767222c2279223a223935434c4e646165695056426b764e30574c4a7067534e53525a334b6b5132635a5477435637674c2d356f227d7d"
+        }
+      ],
+      "authentication": [
+        "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#controller"
+      ],
+      "assertionMethod": [
+        "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#controller",
+        "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#delegate-4",
+        "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#delegate-5"
+      ],
+      "keyAgreement": [
+        "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#delegate-4"
+      ],
+      "service": [
+        {
+          "id": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA#dwn",
+          "type": "DecentralizedWebNode",
+          "serviceEndpoint": ["http://localhost:3000"],
+          "enc": "#enc",
+          "sig": "#sig"
+        }
+      ]
+    },
+    "metadata": {
+      "tenant": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA"
+    },
+    "privateKeys": [
+      {
+        "kty": "EC",
+        "crv": "secp256k1",
+        "x": "8QfchYlZYcT4b5H0y8jCySWC7DdisgWEzsKsUQZZ6gg",
+        "y": "95CLNdaeiPVBkvN0WLJpgSNSRZ3KkQ2cZTwCV7gL-5o",
+        "d": "_XHEdR2QIcafdih2_-vBh_1ImBIscjX_iWoW3nx_sGE"
+      }
+    ]
+  },
+  "metadata": {
+    "name": "Default",
+    "uri": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA",
+    "tenant": "did:continuum:0x2af7:0xc9F09Cdf5e95594367b7452341B6C1F1CEc69BcA"
+  }
+}

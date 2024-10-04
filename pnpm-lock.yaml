@@ -59,8 +59,8 @@ importers:
   packages/agent:
     dependencies:
       '@continuum5/dids':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids
-        version: file:packages/dids
+        specifier: workspace:*
+        version: link:../dids
       '@noble/ciphers':
         specifier: 0.5.3
         version: 0.5.3
@@ -71,11 +71,11 @@ importers:
         specifier: 0.4.7
         version: 0.4.7
       '@web5/common':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common
+        specifier: workspace:*
         version: link:../common
       '@web5/crypto':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto
-        version: file:packages/crypto
+        specifier: workspace:*
+        version: link:../crypto
       abstract-level:
         specifier: 1.0.4
         version: 1.0.4
@@ -174,19 +174,19 @@ importers:
   packages/api:
     dependencies:
       '@continuum5/dids':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids
-        version: file:packages/dids
+        specifier: workspace:*
+        version: link:../dids
       '@web5/agent':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent
+        specifier: workspace:*
         version: link:../agent
       '@web5/common':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common
+        specifier: workspace:*
         version: link:../common
       '@web5/crypto':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto
-        version: file:packages/crypto
+        specifier: workspace:*
+        version: link:../crypto
       '@web5/user-agent':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/user-agent
+        specifier: workspace:*
         version: link:../user-agent
     devDependencies:
       '@playwright/test':
@@ -793,17 +793,17 @@ importers:
   packages/identity-agent:
     dependencies:
       '@continuum5/dids':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids
-        version: file:packages/dids
+        specifier: workspace:*
+        version: link:../dids
       '@web5/agent':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent
+        specifier: workspace:*
         version: link:../agent
       '@web5/common':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common
+        specifier: workspace:*
         version: link:../common
       '@web5/crypto':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto
-        version: file:packages/crypto
+        specifier: workspace:*
+        version: link:../crypto
     devDependencies:
       '@playwright/test':
         specifier: 1.45.3
@@ -881,17 +881,17 @@ importers:
   packages/proxy-agent:
     dependencies:
       '@continuum5/dids':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids
-        version: file:packages/dids
+        specifier: workspace:*
+        version: link:../dids
       '@web5/agent':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent
+        specifier: workspace:*
         version: link:../agent
       '@web5/common':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common
+        specifier: workspace:*
         version: link:../common
       '@web5/crypto':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto
-        version: file:packages/crypto
+        specifier: workspace:*
+        version: link:../crypto
     devDependencies:
       '@playwright/test':
         specifier: 1.45.3
@@ -966,17 +966,17 @@ importers:
   packages/user-agent:
     dependencies:
       '@continuum5/dids':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids
-        version: file:packages/dids
+        specifier: workspace:*
+        version: link:../dids
       '@web5/agent':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent
+        specifier: workspace:*
         version: link:../agent
       '@web5/common':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common
+        specifier: workspace:*
         version: link:../common
       '@web5/crypto':
-        specifier: file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto
-        version: file:packages/crypto
+        specifier: workspace:*
+        version: link:../crypto
     devDependencies:
       '@playwright/test':
         specifier: 1.45.3
@@ -1252,10 +1252,6 @@ packages:
 
   '@changesets/write@0.3.2':
     resolution: {integrity: sha512-kDxDrPNpUgsjDbWBvUo27PzKX4gqeKOlhibaOXDJA6kuBisGqNHv/HwGJrAu8U/dSf8ZEFIeHIPtvSlZI1kULw==}
-
-  '@continuum5/dids@file:packages/dids':
-    resolution: {directory: packages/dids, type: directory}
-    engines: {node: '>=18.0.0'}
 
   '@decentralized-identity/ion-sdk@1.0.4':
     resolution: {integrity: sha512-pOWrlTH5ChxUKRHOgfG2ZeTioWEFJXADyErCQOJ0BqYNDKfP+CM09Vss+9ei6PNOABQlcDn0mEDFZtpO+DXl8A==}
@@ -2577,10 +2573,6 @@ packages:
 
   '@web5/crypto@1.0.5':
     resolution: {integrity: sha512-btVYrv6G29VQgdLVtqH4IbaH6DvvEA2UWgF3y0AMv/wAmT4EKSdwVUHhEWt16gtpN05UT5qEYmnKLZUOxk1zzw==}
-    engines: {node: '>=18.0.0'}
-
-  '@web5/crypto@file:packages/crypto':
-    resolution: {directory: packages/crypto, type: directory}
     engines: {node: '>=18.0.0'}
 
   '@web5/dids@1.1.3':
@@ -6576,18 +6568,6 @@ snapshots:
       human-id: 1.0.2
       prettier: 2.8.8
 
-  '@continuum5/dids@file:packages/dids':
-    dependencies:
-      '@decentralized-identity/ion-sdk': 1.0.4
-      '@dnsquery/dns-packet': 6.1.1
-      '@web5/common': link:packages/common
-      '@web5/crypto': link:packages/crypto
-      abstract-level: 1.0.4
-      bencode: 4.0.0
-      buffer: 6.0.3
-      level: 8.0.1
-      ms: 2.1.3
-
   '@decentralized-identity/ion-sdk@1.0.4':
     dependencies:
       '@noble/ed25519': 2.1.0
@@ -8408,13 +8388,6 @@ snapshots:
       '@noble/curves': 1.3.0
       '@noble/hashes': 1.4.0
       '@web5/common': 1.0.2
-
-  '@web5/crypto@file:packages/crypto':
-    dependencies:
-      '@noble/ciphers': 0.5.3
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.4.0
-      '@web5/common': link:packages/common
 
   '@web5/dids@1.1.3':
     dependencies:

@@ -69,10 +69,10 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@web5/agent": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/agent",
-    "@web5/common": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/common",
-    "@web5/crypto": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/crypto",
-    "@continuum5/dids": "file:/Users/jordan/Desktop/CycurID2024/Web5Continuum/web5-js/packages/dids"
+    "@web5/agent": "workspace:*",
+    "@web5/common": "workspace:*",
+    "@web5/crypto": "workspace:*",
+    "@continuum5/dids": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "1.45.3",

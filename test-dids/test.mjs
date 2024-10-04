@@ -119,7 +119,7 @@ export const DWeb = {
       }
       let agentDid = await BearerDid.import({ portableDid: did });
       const agent = DWeb.agent = await Web5UserAgent.create({ agentDid });
-      agent.sync.startSync({ interval: options.syncInterval || '5s' }).catch((error) => {
+      agent.sync.startSync({ interval: '5s' }).catch((error) => {
         console.error(`Sync failed: ${error}`);
       });
       resolve(DWeb.agent);
@@ -206,90 +206,95 @@ export const DWeb = {
 };
 
 
-// (async () => {
-//     const agent = await DWeb.initialize();
-//     console.log('Web5 agent initialized:', agent);
-  
-//     const newIdentity = await DWeb.identity.create();
-//     console.log('Created new identity:', newIdentity);
-  
-//     const identity = await DWeb.identity.get(newIdentity.did.uri);
-//     console.log('Fetched identity:', identity);
-
-//     const web5Instance = await DWeb.use(identity);
-
-//     const { record } = await web5Instance.dwn.records.create({
-//         data: {
-//           content: 'Hello Web5',
-//           description: 'Keep Building!',
-//         },
-//         message: { published: true, dataFormat: 'application/json' },
-//       });
-      
-//       const response = await web5Instance.dwn.records.query({
-//         message: {
-//           filter: {
-//             dataFormat: 'application/json',
-//           },
-//         },
-//       });
-      
-//       if (response.status.code === 200) {
-//         response.records.forEach(async (record) => {
-//           console.log(`recordID: ${record._recordId}=> `, await record.data.text());
-//         });
-//     }
-//   })();
-
 (async () => {
-    // Initialize the Web5 agent
     const agent = await DWeb.initialize();
+    console.log('Web5 agent initialized:', agent);
   
-    // Check if an identity exists in storage
-    let storedIdentity = DWeb.storage.get('identity');
-    let newIdentity;
+    const newIdentity = await DWeb.identity.create();
+    console.log('Created new identity:', newIdentity);
   
-    if (storedIdentity) {
-      console.log('Found stored identity:');
-      // Import the stored identity
-      newIdentity = await DWeb.identity.get(storedIdentity.didUri);
-    } else {
-      // Create a new identity if none exists in storage
-      newIdentity = await DWeb.identity.create();
-      console.log('Created new identity:');
-      // Store the new identity in storage for future use
-      DWeb.storage.set('identity', { didUri: newIdentity.did.uri });
-    }
-  
-    console.log('Using identity:');
-  
-    // Use the identity with the Web5 instance
-    const web5Instance = await DWeb.use(newIdentity,{sync:false});
-  
-    // Create a new record on the Decentralized Web Node (DWN)
+    const identity = await DWeb.identity.get(newIdentity.did.uri);
+    console.log('Fetched identity:', identity);
+
+    const web5Instance = await DWeb.use(identity);
+
     const { record } = await web5Instance.dwn.records.create({
-      data: {
-        content: 'Hello Web5',
-        description: 'Keep Building!',
-      },
-      message: { published: true, dataFormat: 'application/json' },
-    });
-  
-    // Query records from the DWN
-    const response = await web5Instance.dwn.records.query({
-      message: {
-        filter: {
-          dataFormat: 'application/json',
+        data: {
+          content: 'Hello Web5',
+          description: 'Keep Building!',
         },
-      },
-    });
-  
-    // If the query was successful, print out the records
-    if (response.status.code === 200) {
-      response.records.forEach(async (record) => {
-        console.log(`recordID: ${record._recordId} =>`, await record.data.text());
+        message: { published: true, dataFormat: 'application/json' },
       });
+      
+      const response = await web5Instance.dwn.records.query({
+        message: {
+          filter: {
+            dataFormat: 'application/json',
+          },
+        },
+      });
+      
+      if (response.status.code === 200) {
+        response.records.forEach(async (record) => {
+          console.log(`recordID: ${record._recordId}=> `, await record.data.text());
+        });
     }
   })();
+
+
+  ///NOT WORKING SYNC MOT HAPENING???????
+// (async () => {
+//     // Initialize the Web5 agent
+//     const agent = await DWeb.initialize();
+//     agent.sync.startSync({ interval: '5s' }).catch((error) => {
+//         console.error(`Sync failed: ${error}`);
+//       });
+  
+//     // Check if an identity exists in storage
+//     let storedIdentity = DWeb.storage.get('identity');
+//     let newIdentity;
+  
+//     if (storedIdentity) {
+//       console.log('Found stored identity:');
+//       // Import the stored identity
+//       newIdentity = await DWeb.identity.get(storedIdentity.didUri);
+//     } else {
+//       // Create a new identity if none exists in storage
+//       newIdentity = await DWeb.identity.create();
+//       console.log('Created new identity:');
+//       // Store the new identity in storage for future use
+//       DWeb.storage.set('identity', { didUri: newIdentity.did.uri });
+//     }
+  
+//     console.log('Using identity:');
+  
+//     // Use the identity with the Web5 instance
+//     const web5Instance = await DWeb.use(newIdentity,{sync:false});
+  
+//     // Create a new record on the Decentralized Web Node (DWN)
+//     const { record } = await web5Instance.dwn.records.create({
+//       data: {
+//         content: 'Hello Web5',
+//         description: 'Keep Building!',
+//       },
+//       message: { published: true, dataFormat: 'application/json' },
+//     });
+  
+//     // Query records from the DWN
+//     const response = await web5Instance.dwn.records.query({
+//       message: {
+//         filter: {
+//           dataFormat: 'application/json',
+//         },
+//       },
+//     });
+  
+//     // If the query was successful, print out the records
+//     if (response.status.code === 200) {
+//       response.records.forEach(async (record) => {
+//         console.log(`recordID: ${record._recordId} =>`, await record.data.text());
+//       });
+//     }
+//   })();
   
 

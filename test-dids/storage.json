@@ -1,50 +1,105 @@
 {
-  "web5:createdDid": {
-    "uri": "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ",
+  "web5:agentDid": {
+    "uri": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
     "document": {
-      "@context": [
-        "https://www.w3.org/ns/did/v1"
-      ],
-      "id": "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ",
+      "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
       "verificationMethod": [
         {
-          "id": "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0",
+          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
           "type": "JsonWebKey",
-          "controller": "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ",
+          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
           "publicKeyJwk": {
             "crv": "Ed25519",
             "kty": "OKP",
-            "x": "7Mturo5V9RjveaR3oMGxR__LCRyKa8qW3AHGqjgtgTA",
-            "kid": "Dh91bApbj_OIzPWq61XmefdoZ1yPttL4nnTCR1EATqw",
+            "x": "k-Kg17LWro-QBivH5OsyMkLSvOOb5IDLGuEybK0PCcY",
+            "kid": "ulV2-Re1cDjH_rK6yvD2FzVnvkEZoZTGGSU1CsAIw6c",
             "alg": "EdDSA"
+          }
+        },
+        {
+          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig",
+          "type": "JsonWebKey",
+          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+          "publicKeyJwk": {
+            "crv": "Ed25519",
+            "kty": "OKP",
+            "x": "feGmkv3tSPlZdM5nXzUBS2uNxf5IoptQwR5tEY2X9-o",
+            "kid": "dznCnZZ6dcLEdzTaSvS0qEZQN8Lba6Pji5G4jkpBG90",
+            "alg": "EdDSA"
+          }
+        },
+        {
+          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#enc",
+          "type": "JsonWebKey",
+          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+          "publicKeyJwk": {
+            "kty": "EC",
+            "crv": "secp256k1",
+            "x": "-SoQz43ePr63E-s7CIoOCV4QXh0cTXVCz22FF6i7PUY",
+            "y": "PtbCjYltqo1yziZgybQgZMx9IgpWhGZdG01fIJSg8IU",
+            "kid": "Z-mHDd6i1oJ0v02YzG1JU-kkK1Zga1AuZRb7zE95E40",
+            "alg": "ES256K"
           }
         }
       ],
       "authentication": [
-        "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0"
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig"
       ],
       "assertionMethod": [
-        "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0"
-      ],
-      "capabilityInvocation": [
-        "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0"
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig"
       ],
       "capabilityDelegation": [
-        "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0"
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0"
+      ],
+      "capabilityInvocation": [
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0"
       ],
       "keyAgreement": [
-        "did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6IjdNdHVybzVWOVJqdmVhUjNvTUd4Ul9fTENSeUthOHFXM0FIR3FqZ3RnVEEiLCJraWQiOiJEaDkxYkFwYmpfT0l6UFdxNjFYbWVmZG9aMXlQdHRMNG5uVENSMUVBVHF3IiwiYWxnIjoiRWREU0EifQ#0"
+        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#enc"
+      ],
+      "service": [
+        {
+          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#dwn",
+          "type": "DecentralizedWebNode",
+          "serviceEndpoint": [
+            "http://localhost:3000"
+          ],
+          "enc": "#enc",
+          "sig": "#sig"
+        }
       ]
     },
-    "metadata": {},
+    "metadata": {
+      "published": true,
+      "versionId": "1728078725"
+    },
     "privateKeys": [
       {
         "crv": "Ed25519",
-        "d": "pDy-8N6kENPuwEN3nPjk1w6GLW8_9KFfVob8M631Qwc",
+        "d": "4mjw7OK7dPfRS7oRkqqt8Ia7etpIwOcCcfwYFbJdiz8",
         "kty": "OKP",
-        "x": "7Mturo5V9RjveaR3oMGxR__LCRyKa8qW3AHGqjgtgTA",
-        "kid": "Dh91bApbj_OIzPWq61XmefdoZ1yPttL4nnTCR1EATqw",
+        "x": "k-Kg17LWro-QBivH5OsyMkLSvOOb5IDLGuEybK0PCcY",
+        "kid": "ulV2-Re1cDjH_rK6yvD2FzVnvkEZoZTGGSU1CsAIw6c",
         "alg": "EdDSA"
+      },
+      {
+        "crv": "Ed25519",
+        "d": "DuImWx3jP2-uSEvAbGJ9ajhIumUZfM2sK2OBr3DgQh4",
+        "kty": "OKP",
+        "x": "feGmkv3tSPlZdM5nXzUBS2uNxf5IoptQwR5tEY2X9-o",
+        "kid": "dznCnZZ6dcLEdzTaSvS0qEZQN8Lba6Pji5G4jkpBG90",
+        "alg": "EdDSA"
+      },
+      {
+        "kty": "EC",
+        "crv": "secp256k1",
+        "d": "ObCjCOJ9vt_AeMw81InceCwudjEpdZ-ktUuzFfFIw4I",
+        "x": "-SoQz43ePr63E-s7CIoOCV4QXh0cTXVCz22FF6i7PUY",
+        "y": "PtbCjYltqo1yziZgybQgZMx9IgpWhGZdG01fIJSg8IU",
+        "kid": "Z-mHDd6i1oJ0v02YzG1JU-kkK1Zga1AuZRb7zE95E40",
+        "alg": "ES256K"
       }
     ]
   }

@@ -1,0 +1,113 @@
+{
+  "identity": {
+    "portableDid": {
+      "uri": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+      "document": {
+        "id": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+        "verificationMethod": [
+          {
+            "id": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#0",
+            "type": "JsonWebKey",
+            "controller": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+            "publicKeyJwk": {
+              "crv": "Ed25519",
+              "kty": "OKP",
+              "x": "1pm23TDsgPwbgqBGU_6fg_IajqwL_fbuRuj6zuL4RE4",
+              "kid": "8E3uJAE2HqqPuwbk8HTq8qeLsBw4Msm0i4aVXOrm4eg",
+              "alg": "EdDSA"
+            }
+          },
+          {
+            "id": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#sig",
+            "type": "JsonWebKey",
+            "controller": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+            "publicKeyJwk": {
+              "crv": "Ed25519",
+              "kty": "OKP",
+              "x": "pG8sNp_HPyPdBj6Nsnz85xdcpIsuHN6nKE0T3LrZdKs",
+              "kid": "0Y3lrOdrmfFiarYtgyeXSjbjYKbg9i_dNg9xA8Y-PFI",
+              "alg": "EdDSA"
+            }
+          },
+          {
+            "id": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#enc",
+            "type": "JsonWebKey",
+            "controller": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+            "publicKeyJwk": {
+              "kty": "EC",
+              "crv": "secp256k1",
+              "x": "az_wycjAT1lzqKMzlLMje8uPMykHWu7FBejw1eX-7wA",
+              "y": "ONbekYNH-CRWkW-4xNOo_XZcfMAit9xhOkEXNtzfik8",
+              "kid": "Y-UifR-pYUhpo7ygGdffurgyrZsBTOZojdEhEVgeevQ",
+              "alg": "ES256K"
+            }
+          }
+        ],
+        "authentication": [
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#0",
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#sig"
+        ],
+        "assertionMethod": [
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#0",
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#sig"
+        ],
+        "capabilityDelegation": [
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#0"
+        ],
+        "capabilityInvocation": [
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#0"
+        ],
+        "keyAgreement": [
+          "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#enc"
+        ],
+        "service": [
+          {
+            "id": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y#dwn",
+            "type": "DecentralizedWebNode",
+            "serviceEndpoint": [
+              "http://localhost:3000"
+            ],
+            "enc": "#enc",
+            "sig": "#sig"
+          }
+        ]
+      },
+      "metadata": {
+        "published": true,
+        "versionId": "1729547158"
+      },
+      "privateKeys": [
+        {
+          "crv": "Ed25519",
+          "d": "BnkMpCqes3EWyiYMCX1OQeV0lNu2Tfrij01afPHX-uI",
+          "kty": "OKP",
+          "x": "1pm23TDsgPwbgqBGU_6fg_IajqwL_fbuRuj6zuL4RE4",
+          "kid": "8E3uJAE2HqqPuwbk8HTq8qeLsBw4Msm0i4aVXOrm4eg",
+          "alg": "EdDSA"
+        },
+        {
+          "crv": "Ed25519",
+          "d": "lD1_Tmex__1fLOePUqQYQheJ-Y8yUxCGCO3DfpXOLY0",
+          "kty": "OKP",
+          "x": "pG8sNp_HPyPdBj6Nsnz85xdcpIsuHN6nKE0T3LrZdKs",
+          "kid": "0Y3lrOdrmfFiarYtgyeXSjbjYKbg9i_dNg9xA8Y-PFI",
+          "alg": "EdDSA"
+        },
+        {
+          "kty": "EC",
+          "crv": "secp256k1",
+          "d": "NMpLOJPq77rUWKhxyC417SISBrmQpUgrcFbuwmri-8I",
+          "x": "az_wycjAT1lzqKMzlLMje8uPMykHWu7FBejw1eX-7wA",
+          "y": "ONbekYNH-CRWkW-4xNOo_XZcfMAit9xhOkEXNtzfik8",
+          "kid": "Y-UifR-pYUhpo7ygGdffurgyrZsBTOZojdEhEVgeevQ",
+          "alg": "ES256K"
+        }
+      ]
+    },
+    "metadata": {
+      "name": "Default",
+      "uri": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y",
+      "tenant": "did:dht:44c5pzjo71yxaghnwbdf89w9ox3bidicbx69p51g7d7c7azaet8y"
+    }
+  }
+}

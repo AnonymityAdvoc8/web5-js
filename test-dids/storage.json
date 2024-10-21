@@ -1,67 +1,67 @@
 {
-  "web5:agentDid": {
-    "uri": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+  "agentDid": {
+    "uri": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo",
     "document": {
-      "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+      "id": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo",
       "verificationMethod": [
         {
-          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
+          "id": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#0",
           "type": "JsonWebKey",
-          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+          "controller": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo",
           "publicKeyJwk": {
             "crv": "Ed25519",
             "kty": "OKP",
-            "x": "k-Kg17LWro-QBivH5OsyMkLSvOOb5IDLGuEybK0PCcY",
-            "kid": "ulV2-Re1cDjH_rK6yvD2FzVnvkEZoZTGGSU1CsAIw6c",
+            "x": "Ws7ouLmBphlyx2qST9lfY8zYCLnFWcl-mOKq7QzJagE",
+            "kid": "H-ec6sQCrR9VMh8JrnKApXvNJX7WgRcFxPFNo4JQB3M",
             "alg": "EdDSA"
           }
         },
         {
-          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig",
+          "id": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#sig",
           "type": "JsonWebKey",
-          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+          "controller": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo",
           "publicKeyJwk": {
             "crv": "Ed25519",
             "kty": "OKP",
-            "x": "feGmkv3tSPlZdM5nXzUBS2uNxf5IoptQwR5tEY2X9-o",
-            "kid": "dznCnZZ6dcLEdzTaSvS0qEZQN8Lba6Pji5G4jkpBG90",
+            "x": "Z5d3OU70H37YZRAF7RSSP6BfTXvVbD2WB_83zeuptao",
+            "kid": "XhGVCcM_Nmi99HuoW6ft1srZtcqvnNy5gdaOkdDXIM0",
             "alg": "EdDSA"
           }
         },
         {
-          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#enc",
+          "id": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#enc",
           "type": "JsonWebKey",
-          "controller": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy",
+          "controller": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo",
           "publicKeyJwk": {
             "kty": "EC",
             "crv": "secp256k1",
-            "x": "-SoQz43ePr63E-s7CIoOCV4QXh0cTXVCz22FF6i7PUY",
-            "y": "PtbCjYltqo1yziZgybQgZMx9IgpWhGZdG01fIJSg8IU",
-            "kid": "Z-mHDd6i1oJ0v02YzG1JU-kkK1Zga1AuZRb7zE95E40",
+            "x": "l-oXUS30d6VJ7dM-euqQkPaAE8SYkTp3wENwQy8O9BY",
+            "y": "L8AvO8YFg-yQtH-97w5Km_64lbEyvcNrzMOOnrMHT-E",
+            "kid": "lKZ0D0Or3NNi_6eU4XYpj0JQWsdLVqlmIY7wI8wmssw",
             "alg": "ES256K"
           }
         }
       ],
       "authentication": [
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig"
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#0",
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#sig"
       ],
       "assertionMethod": [
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0",
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#sig"
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#0",
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#sig"
       ],
       "capabilityDelegation": [
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0"
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#0"
       ],
       "capabilityInvocation": [
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#0"
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#0"
       ],
       "keyAgreement": [
-        "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#enc"
+        "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#enc"
       ],
       "service": [
         {
-          "id": "did:dht:1xtkbi7144ze9rygfxd6j431gjbpfx8dux1eb1a4hr3g3mexb8dy#dwn",
+          "id": "did:dht:mm8qtqf3ogub1hs8pkjr9sk9cxgponf3aich19wahkiq4dgjpeyo#dwn",
           "type": "DecentralizedWebNode",
           "serviceEndpoint": [
             "http://localhost:3000"
@@ -73,32 +73,32 @@
     },
     "metadata": {
       "published": true,
-      "versionId": "1728078725"
+      "versionId": "1729547157"
     },
     "privateKeys": [
       {
         "crv": "Ed25519",
-        "d": "4mjw7OK7dPfRS7oRkqqt8Ia7etpIwOcCcfwYFbJdiz8",
+        "d": "tIWid0MYsXxuEG3H2sDrkiPs5doKSdv8hhb72qxMap0",
         "kty": "OKP",
-        "x": "k-Kg17LWro-QBivH5OsyMkLSvOOb5IDLGuEybK0PCcY",
-        "kid": "ulV2-Re1cDjH_rK6yvD2FzVnvkEZoZTGGSU1CsAIw6c",
+        "x": "Ws7ouLmBphlyx2qST9lfY8zYCLnFWcl-mOKq7QzJagE",
+        "kid": "H-ec6sQCrR9VMh8JrnKApXvNJX7WgRcFxPFNo4JQB3M",
         "alg": "EdDSA"
       },
       {
         "crv": "Ed25519",
-        "d": "DuImWx3jP2-uSEvAbGJ9ajhIumUZfM2sK2OBr3DgQh4",
+        "d": "bBAkH9JwflmYd6RVL7AFGzVmEeZNFk0GioDVlTnaheo",
         "kty": "OKP",
-        "x": "feGmkv3tSPlZdM5nXzUBS2uNxf5IoptQwR5tEY2X9-o",
-        "kid": "dznCnZZ6dcLEdzTaSvS0qEZQN8Lba6Pji5G4jkpBG90",
+        "x": "Z5d3OU70H37YZRAF7RSSP6BfTXvVbD2WB_83zeuptao",
+        "kid": "XhGVCcM_Nmi99HuoW6ft1srZtcqvnNy5gdaOkdDXIM0",
         "alg": "EdDSA"
       },
       {
         "kty": "EC",
         "crv": "secp256k1",
-        "d": "ObCjCOJ9vt_AeMw81InceCwudjEpdZ-ktUuzFfFIw4I",
-        "x": "-SoQz43ePr63E-s7CIoOCV4QXh0cTXVCz22FF6i7PUY",
-        "y": "PtbCjYltqo1yziZgybQgZMx9IgpWhGZdG01fIJSg8IU",
-        "kid": "Z-mHDd6i1oJ0v02YzG1JU-kkK1Zga1AuZRb7zE95E40",
+        "d": "IhDpfoMPnSiNRbx8MBcWdXe2xf_cvKmDk2G_SijupNk",
+        "x": "l-oXUS30d6VJ7dM-euqQkPaAE8SYkTp3wENwQy8O9BY",
+        "y": "L8AvO8YFg-yQtH-97w5Km_64lbEyvcNrzMOOnrMHT-E",
+        "kid": "lKZ0D0Or3NNi_6eU4XYpj0JQWsdLVqlmIY7wI8wmssw",
         "alg": "ES256K"
       }
     ]
